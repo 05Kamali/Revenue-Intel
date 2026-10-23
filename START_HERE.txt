@@ -1,0 +1,5 @@
+Open index.html in a modern browser (double-click directly).
+- See README.md for the official assignment submission summary (setup, replay checks, metrics, time spent).
+- See PROJECT_GUIDE.md for the comprehensive end-to-end project, architecture, state machine, and data contract explanation.
+- See RECORDING_OUTLINE.md for the 3-minute video recording narration script.
+- See Revenue_Intelligence_Inbox_Decisions.pptx for the 5-slide executive presentation deck.

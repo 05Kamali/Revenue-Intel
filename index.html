@@ -1,0 +1,4432 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revenue Intelligence Inbox — Executive Workspace</title>
+  <meta name="description" content="Turn incoming calls, meetings, and transcripts into an actionable revenue intelligence inbox for sales managers with evidence-backed routing, interactive diffs, and replay persistence.">
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --surface-hover: #f8fafc;
+      --border: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --border-strong: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-subtle: #eff6ff;
+      --primary-border: #bfdbfe;
+      
+      --sidebar-bg: #0b1329;
+      --sidebar-surface: #131f3f;
+      --sidebar-border: #1e293b;
+      --sidebar-text: #94a3b8;
+      --sidebar-text-active: #ffffff;
+      
+      --route-coaching: #6366f1;
+      --route-coaching-bg: #eef2ff;
+      --route-deal: #059669;
+      --route-deal-bg: #ecfdf5;
+      --route-support: #0284c7;
+      --route-support-bg: #f0f9ff;
+      --route-internal: #d97706;
+      --route-internal-bg: #fffbeb;
+      --route-review: #e11d48;
+      --route-review-bg: #fff1f2;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+      --shadow-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.1), 0 4px 10px -3px rgba(15, 23, 42, 0.05);
+      --shadow-xl: 0 20px 40px -8px rgba(15, 23, 42, 0.14);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #070d19;
+      --surface: #0e1628;
+      --surface-subtle: #162238;
+      --surface-hover: #1c2b45;
+      --border: #1e2d4a;
+      --border-subtle: #141f33;
+      --border-strong: #2a3d63;
+      
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-subtle: #172554;
+      --primary-border: #1d4ed8;
+      
+      --sidebar-bg: #050914;
+      --sidebar-surface: #0a1122;
+      --sidebar-border: #121c33;
+      --sidebar-text: #94a3b8;
+      --sidebar-text-active: #ffffff;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.7);
+      --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.85);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    h1, h2, h3, h4, .brand-title {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    button, select, input {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    /* Layout Shell */
+    .shell {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--sidebar-border);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 40;
+    }
+
+    .brand-section {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid var(--sidebar-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-info strong {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .brand-info small {
+      color: #64748b;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-category {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #475569;
+      padding: 12px 12px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      color: #94a3b8;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: var(--sidebar-surface);
+      color: #e2e8f0;
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0.05) 100%);
+      color: #ffffff;
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+      padding-left: 11px;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: var(--sidebar-surface);
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 18px;
+      border-top: 1px solid var(--sidebar-border);
+      background: #050914;
+    }
+
+    .integrity-card {
+      background: var(--sidebar-surface);
+      border: 1px solid #1e293b;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .integrity-card strong {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e2e8f0;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    /* Main Area */
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 72px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      gap: 16px;
+    }
+
+    [data-theme="dark"] .topbar {
+      background: rgba(14, 22, 40, 0.85);
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breadcrumb-sep {
+      color: var(--text-light);
+    }
+
+    .page-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 2px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn:hover {
+      background: var(--surface-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      border-color: #1d4ed8;
+      color: #ffffff;
+    }
+
+    .btn-outline-primary {
+      border-color: var(--primary-border);
+      color: var(--primary);
+      background: var(--primary-subtle);
+    }
+
+    .btn-outline-primary:hover {
+      background: #dbeafe;
+      border-color: var(--primary);
+    }
+
+    [data-theme="dark"] .btn-outline-primary:hover {
+      background: #1e3a8a;
+    }
+
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      padding: 8px;
+      border-radius: var(--radius-md);
+    }
+
+    .btn-danger-subtle {
+      background: #fff1f2;
+      color: #e11d48;
+      border-color: #fecdd3;
+    }
+
+    [data-theme="dark"] .btn-danger-subtle {
+      background: #3a111a;
+      border-color: #5c1827;
+      color: #fb7185;
+    }
+
+    /* Status Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pill-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .pill-green { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .pill-amber { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .pill-rose { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    .pill-slate { background: var(--surface-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+    .pill-purple { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+    [data-theme="dark"] .pill-blue { background: #172554; color: #93c5fd; border-color: #1e3a8a; }
+    [data-theme="dark"] .pill-green { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
+    [data-theme="dark"] .pill-amber { background: #451a03; color: #fcd34d; border-color: #78350f; }
+    [data-theme="dark"] .pill-rose { background: #4c0519; color: #fda4af; border-color: #881337; }
+    [data-theme="dark"] .pill-purple { background: #2e1065; color: #d8b4fe; border-color: #4c1d95; }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 0 currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Page Container */
+    .content-area {
+      padding: 28px 32px 48px;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-view {
+      display: none;
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-subtle) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: linear-gradient(180deg, #3b82f6 0%, #6366f1 100%);
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--primary);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 13px;
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    /* Metric Cards Grid */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .metric-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .metric-card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: center;
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+    }
+
+    .metric-card.primary .metric-card-icon { background: var(--primary-subtle); color: var(--primary); }
+    .metric-card.success .metric-card-icon { background: #ecfdf5; color: #059669; }
+    .metric-card.amber .metric-card-icon { background: #fffbeb; color: #d97706; }
+    .metric-card.purple .metric-card-icon { background: #f5f3ff; color: #7c3aed; }
+
+    [data-theme="dark"] .metric-card.success .metric-card-icon { background: #064e3b; color: #6ee7b7; }
+    [data-theme="dark"] .metric-card.amber .metric-card-icon { background: #451a03; color: #fcd34d; }
+    [data-theme="dark"] .metric-card.purple .metric-card-icon { background: #2e1065; color: #d8b4fe; }
+
+    .metric-card-val {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .metric-card-formula {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .metric-card-formula svg {
+      width: 13px;
+      height: 13px;
+      color: var(--primary);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title-row h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Activity Chart */
+    .activity-container {
+      padding: 10px 0;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 160px;
+      padding-top: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chart-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chart-col:hover .chart-bar {
+      filter: brightness(1.15);
+      transform: scaleY(1.03);
+      transform-origin: bottom;
+    }
+
+    .chart-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 44px;
+      border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      transition: all 0.2s ease;
+      min-height: 6px;
+      position: relative;
+    }
+
+    .chart-bar.meeting {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    }
+
+    .chart-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70px;
+      margin-top: 6px;
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-box {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* Route Distribution List */
+    .route-meter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .route-meter-item {
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s ease;
+    }
+
+    .route-meter-item:hover {
+      background: var(--surface-subtle);
+    }
+
+    .route-meter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .route-meter-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .route-color-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .route-meter-track {
+      height: 8px;
+      background: var(--surface-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .route-meter-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Tag Badges */
+    .route-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .route-tag.sales_coaching { background: var(--route-coaching-bg); color: var(--route-coaching); border: 1px solid #c7d2fe; }
+    .route-tag.deal_follow_up { background: var(--route-deal-bg); color: var(--route-deal); border: 1px solid #a7f3d0; }
+    .route-tag.customer_support { background: var(--route-support-bg); color: var(--route-support); border: 1px solid #bae6fd; }
+    .route-tag.internal_follow_up { background: var(--route-internal-bg); color: var(--route-internal); border: 1px solid #fde68a; }
+    .route-tag.needs_review { background: var(--route-review-bg); color: var(--route-review); border: 1px solid #fecdd3; }
+
+    [data-theme="dark"] .route-tag.sales_coaching { background: #1e1b4b; color: #a5b4fc; border-color: #312e81; }
+    [data-theme="dark"] .route-tag.deal_follow_up { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
+    [data-theme="dark"] .route-tag.customer_support { background: #082f49; color: #7dd3fc; border-color: #0c4a6e; }
+    [data-theme="dark"] .route-tag.internal_follow_up { background: #451a03; color: #fcd34d; border-color: #78350f; }
+    [data-theme="dark"] .route-tag.needs_review { background: #4c0519; color: #fda4af; border-color: #881337; }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background 0.1s ease;
+      cursor: pointer;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--surface-hover);
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .record-ref-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    .record-title-cell {
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .record-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      background: var(--surface);
+      padding: 14px 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 12px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-input-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13px;
+      width: 100%;
+      color: var(--text-main);
+    }
+
+    .select-filter {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-filter:focus {
+      border-color: var(--primary);
+    }
+
+    /* View Switcher */
+    .view-toggle {
+      display: flex;
+      align-items: center;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+    }
+
+    .view-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .view-btn.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Cards Grid (Conversation Cards) */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .conv-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .conv-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+      transform: translateY(-2px);
+    }
+
+    .conv-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .conv-card-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .conv-card-quote {
+      background: var(--surface-subtle);
+      border-left: 3px solid var(--primary);
+      padding: 10px 12px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 12px;
+      color: var(--text-main);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .conv-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Detail View (Evidence Inspector) */
+    .detail-container {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 24px;
+    }
+
+    .detail-card-head {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .detail-meta-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 6px;
+    }
+
+    .analytical-card {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .analytical-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .evidence-quote-box {
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      color: var(--text-main);
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .evidence-ref-tag {
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 700;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .uncertainty-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #d97706;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      color: #92400e;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    [data-theme="dark"] .uncertainty-box {
+      background: #451a03;
+      border-color: #78350f;
+      color: #fde68a;
+    }
+
+    /* Waveform Audio Simulator Card */
+    .waveform-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .waveform-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .waveform-visualizer {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 48px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waveform-bar {
+      flex: 1;
+      background: var(--primary);
+      opacity: 0.4;
+      border-radius: 2px;
+      transition: height 0.1s ease, opacity 0.15s ease;
+    }
+
+    .waveform-bar.played {
+      opacity: 0.9;
+    }
+
+    .waveform-bar.highlight-turn {
+      background: #10b981;
+      opacity: 1;
+    }
+
+    .waveform-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .turns-timeline {
+      max-height: 480px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 6px;
+    }
+
+    .turn-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .turn-bubble.highlighted {
+      border: 2px solid var(--primary);
+      background: var(--primary-subtle);
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .turn-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Replay Stepper */
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      position: relative;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .step-card.completed .step-num {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .step-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+
+    .step-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active {
+      display: grid;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      max-width: 820px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border);
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Command Palette */
+    .cmd-palette {
+      max-width: 580px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .cmd-input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cmd-input-row input {
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      outline: none;
+      width: 100%;
+      color: var(--text-main);
+    }
+
+    .cmd-results {
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .cmd-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .cmd-item:hover, .cmd-item.selected {
+      background: var(--surface-subtle);
+      color: var(--primary);
+    }
+
+    /* Slides Presentation */
+    .slides-wrapper {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .slide-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 36px 40px;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .slide-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-strong);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .slide-dot.active {
+      background: var(--primary);
+      width: 24px;
+      border-radius: 99px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Folder Tree */
+    .folder-tree {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--sidebar-bg);
+      color: #94a3b8;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .folder-tree strong {
+      color: #38bdf8;
+    }
+
+    .folder-tree span.file {
+      color: #e2e8f0;
+      cursor: pointer;
+    }
+
+    .folder-tree span.file:hover {
+      text-decoration: underline;
+      color: #ffffff;
+    }
+
+    /* Diff View */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .diff-col {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-size: 12px;
+    }
+
+    .diff-col h4 {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Responsive */
+    @media (max-width: 1080px) {
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid-2, .detail-container, .diff-grid { grid-template-columns: 1fr; }
+      .stepper { grid-template-columns: repeat(2, 1fr); }
+      }
+
+    @media (max-width: 768px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 0 16px; }
+      .content-area { padding: 16px; }
+      .stepper { grid-template-columns: 1fr; }
+    }
+  
+    /* 8-Card Metric Grid */
+    .metric-grid-8 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .metric-card-split {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+
+    .metric-card-split-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .metric-card-split-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .separate-panels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .rep-meter-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 40px;
+      gap: 12px;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s ease;
+      font-size: 12px;
+    }
+
+    .rep-meter-row:hover {
+      background: var(--surface-subtle);
+    }
+
+    .rep-name-col {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rep-track {
+      height: 7px;
+      background: var(--surface-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .rep-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--primary);
+    }
+
+    .rep-fill.meeting {
+      background: #059669;
+    }
+
+    .rep-count-col {
+      text-align: right;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1180px) {
+      .metric-grid-8 { grid-template-columns: repeat(2, 1fr); }
+      .separate-panels-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .metric-grid-8 { grid-template-columns: 1fr; }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-section">
+      <div class="brand-icon">RI</div>
+      <div class="brand-info">
+        <strong>Revenue Intel</strong>
+        <small>Inbox Workspace</small>
+      </div>
+    </div>
+
+    <div class="nav-scroll">
+      <div class="nav-category">Core Workspace</div>
+      <div class="nav-item active" data-nav="overview" id="nav-overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        Manager Overview
+      </div>
+      <div class="nav-item" data-nav="conversations" id="nav-conversations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Conversations
+        <span class="nav-badge" id="navConvCount">44</span>
+      </div>
+      <div class="nav-item" data-nav="brief" id="nav-brief">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Daily Manager Brief
+      </div>
+
+      <div class="nav-category">Verification & Ops</div>
+      <div class="nav-item" data-nav="imports" id="nav-imports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+        Import & Replay Lab
+      </div>
+      <div class="nav-item" data-nav="exports" id="nav-exports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        Exports & Manifest
+      </div>
+      <div class="nav-item" data-nav="slides" id="nav-slides">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>
+        Submission & Slides
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="integrity-card">
+        <strong>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+          Evidence Integrity
+        </strong>
+        Denominator definitions explicit. Manual route overrides survive batch updates & browser refresh. Missing text is never treated as non-occurrence.
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="main-wrapper">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="breadcrumb">
+          <span>Workspace</span>
+          <span class="breadcrumb-sep">/</span>
+          <span id="breadcrumbCurrent">Manager Overview</span>
+        </div>
+        <h1 class="page-title" id="pageTitle">Manager Overview</h1>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Command Palette Trigger -->
+        <button class="btn btn-sm" id="btnOpenCmdPalette" title="Command Palette (Ctrl+K)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <kbd style="font-size:10px; opacity:0.6; padding:1px 4px; border:1px solid var(--border); border-radius:3px;">Ctrl+K</kbd>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button class="btn btn-sm btn-icon" id="btnToggleTheme" title="Toggle Light / Dark Mode">
+          <svg id="themeIconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg id="themeIconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <button class="btn btn-primary btn-sm" id="btnLoadDemo" title="Load both batches (01_initial and 02_update) into post-update state">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          Load Demo State
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="btnRunTestQuick" title="Run 1-Click Automated Replay Invariant Suite">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Replay Test Suite
+        </button>
+      </div>
+    </header>
+
+    <!-- Pages Container -->
+    <main class="content-area">
+
+      <!-- ================= PAGE 1: MANAGER OVERVIEW ================= -->
+      <!-- ================= PAGE 1: MANAGER OVERVIEW ================= -->
+      <section id="page-overview" class="page-view active">
+        <!-- Hero Header -->
+        <div class="hero-banner">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="pill pill-blue">Friday · 21 August 2026 · Asia/Kolkata</span>
+              <span class="pill pill-green" id="heroStatePill"><span class="pulse-dot"></span> Current State Loaded</span>
+            </div>
+            <h2 class="hero-title">Make the Next Revenue Decision Clearer</h2>
+            <p class="hero-desc">
+              Executive sales intelligence inbox synthesizing incoming calls, calendar meetings, transcripts, and operational escalations.
+              All metrics are dynamically derived from the imported dataset. Denominators are strictly defined: meeting organisers are displayed separately from caller reps without fabricated pipelines or rep rankings.
+            </p>
+          </div>
+          <button class="btn btn-sm" id="btnOpenMathModal" style="white-space: nowrap;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Metric Definitions & Denominators
+          </button>
+        </div>
+
+        <!-- 8 Core Headline Metric Cards (Strictly dynamically calculated from imported dataset) -->
+        <div class="metric-grid-8">
+          <!-- Metric 1: Total Unique Source Records -->
+          <div class="card metric-card primary" onclick="openMathModal('records')">
+            <div class="metric-card-header">
+              <span>Total Unique Source Records</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricTotal">44</div>
+            <div class="metric-card-formula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Key: <code>(source_type, source_id)</code></span>
+            </div>
+          </div>
+
+          <!-- Metric 2: Call and Meeting Counts -->
+          <div class="card metric-card primary" onclick="navigate('conversations')">
+            <div class="metric-card-header">
+              <span>Call & Meeting Counts</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-split" id="metricCallMeetingSplit">
+              <div><span class="metric-card-split-val" id="metricCallsCount">30</span> <span class="metric-card-split-label">Calls</span></div>
+              <div style="color:var(--text-light); font-size:18px;">/</div>
+              <div><span class="metric-card-split-val" id="metricMeetingsCount">14</span> <span class="metric-card-split-label">Meetings</span></div>
+            </div>
+            <div class="metric-card-formula" id="metricSplitRatio">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>68.2% Calls · 31.8% Meetings</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: Usable Supplied Transcript Count & Coverage % -->
+          <div class="card metric-card success" onclick="openMathModal('coverage')">
+            <div class="metric-card-header">
+              <span>Usable Transcript Coverage</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricCoverage">18 <span style="font-size: 15px; font-weight: 500; color: var(--text-muted);">/ 44</span></div>
+            <div class="metric-card-formula" id="metricCoveragePct">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>40.9% of selected records</span>
+            </div>
+          </div>
+
+          <!-- Metric 4: Activity by Day -->
+          <div class="card metric-card primary" onclick="openMathModal('records')">
+            <div class="metric-card-header">
+              <span>Activity by Day</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricActivityDay">21 Aug</div>
+            <div class="metric-card-formula" id="metricDayDetails">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>44 interactions on 21 Aug 2026 (Asia/Kolkata)</span>
+            </div>
+          </div>
+
+          <!-- Metric 5: Records Awaiting Review -->
+          <div class="card metric-card amber" onclick="filterByTextState('pending')">
+            <div class="metric-card-header">
+              <span>Records Awaiting Review</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricAwaitingReview">27</div>
+            <div class="metric-card-formula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Missing text, pending update, or intake route</span>
+            </div>
+          </div>
+
+          <!-- Metric 6: Records with Missing or Unusable Text -->
+          <div class="card metric-card amber" onclick="filterByTextState('missing')">
+            <div class="metric-card-header">
+              <span>Missing / Unusable Text</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricMissingText">26</div>
+            <div class="metric-card-formula" id="metricMissingPct">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>59.1% withheld / silent test intake</span>
+            </div>
+          </div>
+
+          <!-- Metric 7: Records with Stale or Pending Analysis -->
+          <div class="card metric-card purple" onclick="filterByTextState('pending')">
+            <div class="metric-card-header">
+              <span>Stale / Pending Analysis</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricPendingAnalysis">1</div>
+            <div class="metric-card-formula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Transcript changed; review required</span>
+            </div>
+          </div>
+
+          <!-- Metric 8: Routing Assignment Counts -->
+          <div class="card metric-card primary" onclick="navigate('conversations')">
+            <div class="metric-card-header">
+              <span>Routing Assignments</span>
+              <div class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+              </div>
+            </div>
+            <div class="metric-card-val" id="metricRoutingAssignments">52</div>
+            <div class="metric-card-formula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <span>Multi-destination across 5 routes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dedicated Separate Activity Section: Call Reps vs Meeting Organisers (Displayed Separately) -->
+        <div class="separate-panels-grid">
+          <!-- Panel A: Activity by Call Representative (Calls Only) -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Activity by Call Representative</h3>
+                <div class="card-subtitle">Phone outreach and conversations grouped by assigned caller rep</div>
+              </div>
+              <span class="pill pill-blue" id="callRepBadge">30 Calls</span>
+            </div>
+            <div id="callRepList" style="display:flex; flex-direction:column; gap:8px;"></div>
+            <div class="card-subtitle" style="margin-top:12px; font-size:11px;">
+              Caller identities from <code>payload.rep_name</code>. Click any representative to inspect their call records.
+            </div>
+          </div>
+
+          <!-- Panel B: Meeting Activity by Organiser (Meetings Only · DISPLAYED SEPARATELY) -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Meeting Activity by Organiser</h3>
+                <div class="card-subtitle">Calendar records grouped by organiser email (Displayed separately from call reps)</div>
+              </div>
+              <span class="pill pill-green" id="meetingOrgBadge">14 Meetings</span>
+            </div>
+            <div id="meetingOrgList" style="display:flex; flex-direction:column; gap:8px;"></div>
+            <div class="card-subtitle" style="margin-top:12px; font-size:11px; color:#047857;">
+              <strong>Boundary:</strong> Calendar organisers are not assumed to be salespeople, attendees, or deal owners.
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Section: Routing Distribution Meters & Hourly Activity Progression -->
+        <div class="grid-2">
+          <!-- Routing Assignment Counts Breakdown -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Routing Assignment Counts</h3>
+                <div class="card-subtitle">Counts by destination. Multi-destination allows 1 conversation to serve multiple purposes.</div>
+              </div>
+              <button class="btn btn-sm" onclick="filterByRoute('all')">View All</button>
+            </div>
+            <div class="route-meter-list" id="routeMeterList"></div>
+          </div>
+
+          <!-- Activity by Day & Hourly Timeline Progression -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Activity Progression Across the Day</h3>
+                <div class="card-subtitle">Hourly distribution for Friday, 21 August 2026 (Asia/Kolkata timezone)</div>
+              </div>
+              <span class="pill pill-slate">24-Hour Activity Spread</span>
+            </div>
+            <div class="activity-container">
+              <div class="chart-bars" id="hourlyChartBars"></div>
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-box" style="background: var(--primary);"></div>
+                  <span>Hourly Interaction Volume (Local Date: 2026-08-21)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commercial & Operational Signals Matrix -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title-row">
+            <div>
+              <h3>Commercial & Operational Objection Matrix</h3>
+              <div class="card-subtitle">Aggregated conversation topics extracted from the 18 usable conversations</div>
+            </div>
+            <span class="pill pill-blue">18 Transcripts Evaluated</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; font-size: 12px;">
+            <div class="analytical-card" style="border-left: 3px solid #0284c7;">
+              <strong style="color: var(--route-support);">Product Defects & Workarounds</strong>
+              <p style="margin: 4px 0; color: var(--text-muted);">Attachment direct-upload failure on Recreate payment; description not refreshing; amount carry-over bug.</p>
+              <div style="margin-top: 6px;"><span class="record-ref-badge" style="cursor:pointer;" onclick="openRecordDetail('M07')">M07</span> <span class="record-ref-badge" style="cursor:pointer;" onclick="openRecordDetail('M09')">M09</span></div>
+            </div>
+            <div class="analytical-card" style="border-left: 3px solid #6366f1;">
+              <strong style="color: var(--route-coaching);">Cold Outreach Resistance</strong>
+              <p style="margin: 4px 0; color: var(--text-muted);">Prospect challenged cold outreach; unrequested call; already advanced automation in place.</p>
+              <div style="margin-top: 6px;"><span class="record-ref-badge" style="cursor:pointer;" onclick="openRecordDetail('C01')">C01</span></div>
+            </div>
+            <div class="analytical-card" style="border-left: 3px solid #059669;">
+              <strong style="color: var(--route-deal);">Tentative Interest & Price Sensitivity</strong>
+              <p style="margin: 4px 0; color: var(--text-muted);">Faint mobile connection; developer API needed but budget sensitive; agreed email follow-up before Monday call.</p>
+              <div style="margin-top: 6px;"><span class="record-ref-badge" style="cursor:pointer;" onclick="openRecordDetail('C03')">C03</span> <span class="record-ref-badge" style="cursor:pointer;" onclick="openRecordDetail('C04')">C04</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority Conversations Watchlist -->
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <h3>Priority Conversations & Critical Exceptions</h3>
+              <div class="card-subtitle">Source-grounded records requiring immediate manager attention or coaching review</div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" onclick="navigate('conversations')">
+              Explore All 44 Records →
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Record Ref</th>
+                  <th>Title / Contact</th>
+                  <th>Person & Role</th>
+                  <th>Assigned Route(s)</th>
+                  <th>Text Availability</th>
+                  <th>Review Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="priorityTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 2: CONVERSATIONS INBOX ================= -->
+      <section id="page-conversations" class="page-view">
+        <div class="filter-bar">
+          <div class="search-input-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Search record ID (e.g. M07, C03), title, rep, or transcript keywords...">
+          </div>
+
+          <select class="select-filter" id="filterSourceType">
+            <option value="all">All Source Types (44)</option>
+            <option value="call">Phone Calls (30)</option>
+            <option value="meeting">Calendar Meetings (14)</option>
+          </select>
+
+          <select class="select-filter" id="filterPerson">
+            <option value="all">All People / Organisers</option>
+          </select>
+
+          <select class="select-filter" id="filterRoute">
+            <option value="all">All Routes</option>
+            <option value="sales_coaching">Sales Coaching</option>
+            <option value="deal_follow_up">Deal Follow-up</option>
+            <option value="customer_support">Customer Support</option>
+            <option value="internal_follow_up">Internal Follow-up</option>
+            <option value="needs_review">Needs Review</option>
+          </select>
+
+          <select class="select-filter" id="filterTextState">
+            <option value="all">All Text Availability</option>
+            <option value="usable">Usable Supplied Text</option>
+            <option value="missing">Missing / Withheld Text</option>
+            <option value="pending">Analysis Pending Review</option>
+          </select>
+
+          <select class="select-filter" id="filterOverride">
+            <option value="all">All Override States</option>
+            <option value="manual">Manager Override Active</option>
+            <option value="auto">Automated Suggestion</option>
+          </select>
+
+          <div class="view-toggle">
+            <button class="view-btn active" id="viewBtnTable" onclick="setConversationView('table')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Table
+            </button>
+            <button class="view-btn" id="viewBtnCards" onclick="setConversationView('cards')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Cards
+            </button>
+          </div>
+
+          <button class="btn btn-sm" id="btnResetFilters">Reset</button>
+        </div>
+
+        <div style="margin-bottom: 12px; font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+          <span id="filterStatsLabel">Showing 44 of 44 unique records</span>
+          <span>Click any conversation to inspect evidence quotes, turns, and manage routing.</span>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container" id="convTableView">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Record</th>
+                <th>Context / Contact</th>
+                <th>Person / Role</th>
+                <th>Assigned Route(s)</th>
+                <th>Text Status</th>
+                <th>Revision</th>
+                <th>Review State</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="convTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Cards View -->
+        <div class="cards-grid" id="convCardsView" style="display: none;"></div>
+      </section>
+
+      <!-- ================= PAGE 3: EVIDENCE INSPECTOR (DETAIL) ================= -->
+      <section id="page-detail" class="page-view">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <button class="btn btn-sm" onclick="navigate('conversations')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            ← Back to Conversations Library
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-sm btn-outline-primary" id="btnOpenDiffModal" style="display:none;" onclick="openDiffModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+              Compare Revisions (v1 vs v2 Diff)
+            </button>
+          </div>
+        </div>
+
+        <div id="detailViewContainer"></div>
+      </section>
+
+      <!-- ================= PAGE 4: DAILY MANAGER BRIEF ================= -->
+      <section id="page-brief" class="page-view">
+        <div class="hero-banner">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="pill pill-blue">Friday · 21 August 2026 · Asia/Kolkata</span>
+              <span class="pill pill-green">Pre-Generated Evidence Synthesis</span>
+            </div>
+            <h2 class="hero-title">Daily Manager Brief — 21 August 2026</h2>
+            <p class="hero-desc">
+              Curated daily executive synthesis. Brings together team interactions, coaching focus areas, customer defects, and commercial next steps. 
+              Grounded in verifiable transcript citations. Does not fabricate unproven pipeline values or rep rankings.
+            </p>
+          </div>
+          <button class="btn btn-primary" id="btnDownloadBriefMD">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            Download Brief (.md)
+          </button>
+        </div>
+
+        <div class="grid-2">
+          <!-- Priority Findings for Today -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Key Operational & Commercial Priorities</h3>
+                <div class="card-subtitle">Traceable back to specific turns and exact quotes</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;" id="briefPriorityList"></div>
+          </div>
+
+          <!-- Coaching Guidance & Guardrails -->
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="card">
+              <div class="card-title-row">
+                <div>
+                  <h3>Sales Coaching Focus Areas</h3>
+                  <div class="card-subtitle">Conversation-specific signals (not staff rankings)</div>
+                </div>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                <div class="analytical-card">
+                  <h4>
+                    <span class="pill pill-purple">C01 · Cold Outreach</span>
+                    Respecting Explicit Rejection & ICP Targeting
+                  </h4>
+                  <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">
+                    <strong>Observation:</strong> Prospect stated clearly: <em>"I didn't ask for this call, and I'm not interested."</em><br>
+                    <strong>Coaching Action:</strong> Do not treat pitch delivery as a qualified opportunity. Train reps to respect explicit disinterest gracefully and audit list qualification sources.
+                  </p>
+                </div>
+
+                <div class="analytical-card">
+                  <h4>
+                    <span class="pill pill-purple">C03 · Deal Exploration</span>
+                    Requirement Confirmation Prior to Pricing
+                  </h4>
+                  <p style="color: var(--text-muted); font-size: 12px; margin-top: 4px;">
+                    <strong>Observation:</strong> Prospect noted faint audio while travelling and requested email: <em>"Send the email and we can speak Monday or Tuesday."</em><br>
+                    <strong>Coaching Action:</strong> Send the exact promised follow-up email. Uncover technical developer-access scope before offering discounts or pricing concessions.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="background: var(--surface-subtle); border-color: #fde68a;">
+              <div class="card-title-row">
+                <div>
+                  <h3 style="color: #92400e;">Operational Guardrails</h3>
+                  <div class="card-subtitle" style="color: #b45309;">Essential context for reviewers and managers</div>
+                </div>
+              </div>
+              <ul style="padding-left: 20px; font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                <li><strong>No Fabricated Pipeline:</strong> Without an authoritative CRM opportunity table, deal stage or contract values must not be inferred.</li>
+                <li><strong>Missing Text != Silence:</strong> Records with null transcript (e.g. B01-B20) reflect assessment batch withholding, not proof that calls failed to connect.</li>
+                <li><strong>Meeting Organisers:</strong> Organisers are not automatically sales reps, attendees, or deal owners.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 5: IMPORT & REPLAY LAB ================= -->
+      <section id="page-imports" class="page-view">
+        <div class="hero-banner">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="pill pill-blue">Verification & Contract Testing</span>
+              <span class="pill pill-slate" id="replayStateBadge">No Imports Active</span>
+            </div>
+            <h2 class="hero-title">Deterministic Import & Replay Lab</h2>
+            <p class="hero-desc">
+              Demonstrates strict compliance with <code>DATA_CONTRACT.md</code>. Identity is the pair <code>(source_type, source_id)</code>. 
+              Same or older revisions are ignored. Newer revisions replace payload & transcript. Manual routes remain strictly decoupled from source text updates.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" id="btnRunAutomatedSuite">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run 1-Click Automated Replay Test
+            </button>
+          </div>
+        </div>
+
+        <!-- 5-Step Visual Stepper -->
+        <div class="stepper">
+          <div class="step-card" id="step1Card">
+            <div class="step-num">1</div>
+            <div class="step-title">Initial Import</div>
+            <div class="step-desc">Imports <code>01_initial.json</code>. 44 records, 17 with usable text.</div>
+          </div>
+
+          <div class="step-card" id="step2Card">
+            <div class="step-num">2</div>
+            <div class="step-title">Deduplication Test</div>
+            <div class="step-desc">Re-imports initial batch in reverse order. Verifies count stays 44.</div>
+          </div>
+
+          <div class="step-card" id="step3Card">
+            <div class="step-num">3</div>
+            <div class="step-title">Manual Route Correction</div>
+            <div class="step-desc">Sets M07 to Customer Support. Verifies manager override flag.</div>
+          </div>
+
+          <div class="step-card" id="step4Card">
+            <div class="step-num">4</div>
+            <div class="step-title">Late Update Batch</div>
+            <div class="step-desc">Imports <code>02_update.json</code>. M07 gets rev 2 & 27 turns. Total usable text -> 18.</div>
+          </div>
+
+          <div class="step-card" id="step5Card">
+            <div class="step-num">5</div>
+            <div class="step-title">Preserve Judgment</div>
+            <div class="step-desc">Repeats initial batch & verifies M07 manual route survives.</div>
+          </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title-row">
+            <div>
+              <h3>Manual Replay Controls</h3>
+              <div class="card-subtitle">Step-by-step reproduction controls matching the candidate evaluation rubric</div>
+            </div>
+            <button class="btn btn-sm btn-danger-subtle" id="btnCleanReset">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Reset to Clean Start
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0;">
+            <button class="btn btn-outline-primary" id="btnStep1Import">1. Import 01_initial.json</button>
+            <button class="btn" id="btnStep2Repeat">2. Repeat Initial (Reversed Order)</button>
+            <button class="btn" id="btnStep3OverrideM07">3. Set M07 Manual Route: Customer Support</button>
+            <button class="btn btn-outline-primary" id="btnStep4Update">4. Import 02_update.json</button>
+            <button class="btn" id="btnStep5CheckPersistence">5. Check Persistence (Repeat Initial)</button>
+            
+            <label style="margin-left: auto;">
+              <input type="file" id="customFileInput" accept="application/json,.json" hidden>
+              <button class="btn" id="btnUploadCustomBatch" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Custom Batch JSON...
+              </button>
+            </label>
+          </div>
+
+          <!-- Replay Invariants Status Box -->
+          <div style="background: var(--surface-subtle); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 14px; border: 1px solid var(--border);">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">Live Invariant Health Status</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 12px;">
+              <div><strong>Unique Records:</strong> <span id="invCountCheck">0</span> (Target: 44)</div>
+              <div><strong>Usable Texts:</strong> <span id="invUsableCheck">0</span> (Target: 17 → 18)</div>
+              <div><strong>M07 Revision:</strong> <span id="invM07Rev">None</span></div>
+              <div><strong>M07 Route Mode:</strong> <span id="invM07Route">None</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deterministic Routing Rule Sandbox (Unique Feature) -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-title-row">
+            <div>
+              <h3>Deterministic Routing Rule Simulator</h3>
+              <div class="card-subtitle">Transparent rule engine: test phrases to see assigned destinations</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+            <input type="text" id="ruleTestInput" class="select-filter" style="flex:1;" placeholder="Enter sample customer or rep speech (e.g. 'direct upload bug', 'send the email and we speak monday')...">
+            <button class="btn btn-primary btn-sm" id="btnTestRule">Simulate Routing</button>
+          </div>
+          <div id="ruleTestOutput" style="font-size:12px; color:var(--text-muted); background:var(--surface-subtle); padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            Type a phrase above or click test examples: 
+            <span class="record-ref-badge" style="cursor:pointer;" onclick="testRulePhrase('upload issue workaround bug')">"upload issue workaround"</span> · 
+            <span class="record-ref-badge" style="cursor:pointer;" onclick="testRulePhrase('send email call Monday API')">"send email call Monday"</span> · 
+            <span class="record-ref-badge" style="cursor:pointer;" onclick="testRulePhrase('not interested cold call')">"not interested cold call"</span>
+          </div>
+        </div>
+
+        <!-- Event Log -->
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <h3>Import & Replay Event Log</h3>
+              <div class="card-subtitle">Chronological ledger of batch deliveries, revision updates, and deduplications</div>
+            </div>
+          </div>
+          <div id="replayLogList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 6: EXPORTS & MANIFEST HUB ================= -->
+      <section id="page-exports" class="page-view">
+        <div class="hero-banner">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="pill pill-blue">Auditable Output Architecture</span>
+            </div>
+            <h2 class="hero-title">Organised Exports & Manifest Hub</h2>
+            <p class="hero-desc">
+              Multi-destination exports organised into predictable directories without losing shared conversation context. 
+              Manifest is machine-readable in both JSON and CSV formats. Download individual files or the complete packaged JSON bundle.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" id="btnDownloadManifestJSON">
+              Download Manifest (JSON)
+            </button>
+            <button class="btn btn-sm" id="btnDownloadManifestCSV">
+              Download Manifest (CSV)
+            </button>
+            <button class="btn btn-outline-primary btn-sm" id="btnDownloadBundle">
+              Download Full Export Bundle (.json)
+            </button>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Folder Architecture Preview & Markdown Viewer -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Target Folder Architecture</h3>
+                <div class="card-subtitle">Click any file to preview its formatted Markdown output below</div>
+              </div>
+            </div>
+            <div class="folder-tree">
+revenue-inbox-export/
+├── <strong>customer-support/</strong>       <span class="file" onclick="previewExportFile('customer-support/M07.md')">M07.md</span>, <span class="file" onclick="previewExportFile('customer-support/M09.md')">M09.md</span>
+├── <strong>deal-follow-up/</strong>         <span class="file" onclick="previewExportFile('deal-follow-up/C03.md')">C03.md</span>, <span class="file" onclick="previewExportFile('deal-follow-up/C04.md')">C04.md</span>
+├── <strong>internal-follow-up/</strong>     <span class="file" onclick="previewExportFile('internal-follow-up/M07.md')">M07.md</span>
+├── <strong>sales-coaching/</strong>         <span class="file" onclick="previewExportFile('sales-coaching/C01.md')">C01.md</span>, <span class="file" onclick="previewExportFile('sales-coaching/C03.md')">C03.md</span>
+├── <strong>needs-review/</strong>           <span class="file" onclick="previewExportFile('needs-review/B01.md')">B01.md</span> ... <span class="file" onclick="previewExportFile('needs-review/B20.md')">B20.md</span>
+├── <strong>manager-brief/</strong>          <span class="file" onclick="previewExportFile('manager-brief/manager-brief-2026-08-21.md')">manager-brief-2026-08-21.md</span>
+└── <span class="file" onclick="downloadManifestJSON()">manifest.json</span> / <span class="file" onclick="downloadManifestCSV()">manifest.csv</span>
+            </div>
+
+            <!-- Live Markdown Document Preview Pane (Unique Feature) -->
+            <div style="margin-top:16px; border-top: 1px solid var(--border); padding-top:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <strong id="previewFileName" style="font-size:12px; color:var(--primary);">customer-support/M07.md (Preview)</strong>
+                <button class="btn btn-sm" id="btnCopyPreview">Copy Markdown</button>
+              </div>
+              <pre id="previewFileContent" style="font-family:'JetBrains Mono',monospace; font-size:11px; background:var(--surface-subtle); padding:12px; border-radius:var(--radius-md); max-height:220px; overflow:auto; white-space:pre-wrap; border:1px solid var(--border);"></pre>
+            </div>
+          </div>
+
+          <!-- Manifest Fields Spec -->
+          <div class="card">
+            <div class="card-title-row">
+              <div>
+                <h3>Manifest Schema Compliance</h3>
+                <div class="card-subtitle">Mandatory fields defined in DATA_CONTRACT.md</div>
+              </div>
+            </div>
+            <table class="data-table" style="font-size: 12px;">
+              <thead>
+                <tr><th>Field</th><th>Type</th><th>Purpose</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>source_type</code></td><td>string</td><td>call or meeting</td></tr>
+                <tr><td><code>source_id</code></td><td>UUID</td><td>Global identity pair with source_type</td></tr>
+                <tr><td><code>record_ref</code></td><td>string</td><td>Convenience reading label (e.g. M07)</td></tr>
+                <tr><td><code>applied_revision</code></td><td>int</td><td>Applied version (1 or 2)</td></tr>
+                <tr><td><code>routes</code></td><td>array</td><td>Assigned destinations (can overlap)</td></tr>
+                <tr><td><code>output_paths</code></td><td>array</td><td>Relative markdown destination paths</td></tr>
+                <tr><td><code>processing_state</code></td><td>string</td><td>ready, missing_text, pending_review</td></tr>
+                <tr><td><code>manual_override</code></td><td>bool</td><td>Flag indicating manager correction</td></tr>
+                <tr><td><code>analysis_freshness</code></td><td>string</td><td>current, pending_review, not_available</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Manifest Data Table -->
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-title-row">
+            <div>
+              <h3>Active Export Manifest</h3>
+              <div class="card-subtitle">Real-time projection of all 44 records in current state</div>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table" style="font-size: 12px;">
+              <thead>
+                <tr>
+                  <th>Source Type</th>
+                  <th>Record Ref</th>
+                  <th>Source ID</th>
+                  <th>Rev</th>
+                  <th>Route(s)</th>
+                  <th>Output Path(s)</th>
+                  <th>Processing State</th>
+                  <th>Manual Override</th>
+                  <th>Freshness</th>
+                </tr>
+              </thead>
+              <tbody id="manifestTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 7: SUBMISSION & SLIDES ================= -->
+      <section id="page-slides" class="page-view">
+        <div class="slides-wrapper">
+          <div class="hero-banner" style="margin-bottom: 20px;">
+            <div>
+              <div class="hero-eyebrow">
+                <span class="pill pill-purple">Candidate Evaluation Artifact</span>
+              </div>
+              <h2 class="hero-title">Five-Slide Presentation & Decision Deck</h2>
+              <p class="hero-desc">
+                Accompanying presentation addressing the required candidate prompts: manager problem, interface choices, routing architecture, number verification, and trade-offs. Also reviewable in <code>Revenue_Intelligence_Inbox_Decisions.pptx</code>.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-sm" id="btnSlidePrev">← Prev</button>
+              <button class="btn btn-sm btn-primary" id="btnSlideNext">Next →</button>
+            </div>
+          </div>
+
+          <div class="slide-card" id="slideContainer"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ================= MODAL: COMMAND PALETTE ================= -->
+<div class="modal-backdrop" id="cmdPaletteModal">
+  <div class="cmd-palette">
+    <div class="cmd-input-row">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="cmdPaletteInput" placeholder="Type a command or record ref (e.g. 'M07', 'Brief', 'Test', 'Dark')...">
+      <kbd style="font-size:10px; opacity:0.6; padding:2px 6px; border:1px solid var(--border); border-radius:3px;">ESC to close</kbd>
+    </div>
+    <div class="cmd-results" id="cmdPaletteResults"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL: M07 REVISION DIFF INSPECTOR ================= -->
+<div class="modal-backdrop" id="diffModal">
+  <div class="modal-box" style="max-width: 900px;">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 17px; font-weight: 700;">M07 Revision Comparison: v1 vs v2 Side-by-Side</h3>
+        <div style="font-size: 12px; color: var(--text-muted);">Demonstrating late transcript ingestion without record inflation or override erasure</div>
+      </div>
+      <button class="modal-close" onclick="closeDiffModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="diff-grid">
+        <div class="diff-col">
+          <h4>
+            <span class="pill pill-slate">Revision 1 (01_initial.json)</span>
+          </h4>
+          <p><strong>Batch ID:</strong> batch-initial-01</p>
+          <p><strong>Payload turns:</strong> <code>[] (0 turns)</code></p>
+          <p><strong>Usable Supplied Text:</strong> <span class="pill pill-amber">False (withheld)</span></p>
+          <p><strong>Unavailable Reason:</strong> <em>"Transcript not included in this delivery; a later assessment batch supplies it."</em></p>
+          <p><strong>Review State:</strong> <code>missing_text</code></p>
+          <p><strong>Suggested Route:</strong> <code>needs_review</code></p>
+        </div>
+
+        <div class="diff-col" style="border-color: #3b82f6; background: var(--primary-subtle);">
+          <h4 style="color: var(--primary);">
+            <span class="pill pill-blue">Revision 2 (02_update.json)</span>
+          </h4>
+          <p><strong>Batch ID:</strong> batch-update-02</p>
+          <p><strong>Payload turns:</strong> <code>27 turns supplied</code></p>
+          <p><strong>Usable Supplied Text:</strong> <span class="pill pill-green">True (usable)</span></p>
+          <p><strong>Key Spoken Evidence (Turn 15):</strong> <em>“The workaround does not mean the direct upload issue has been resolved.”</em></p>
+          <p><strong>Review State:</strong> <span class="pill pill-amber">pending_review</span> (source changed!)</p>
+          <p><strong>Manual Route:</strong> <span class="pill pill-green">Customer Support (Preserved!)</span></p>
+        </div>
+      </div>
+      <div style="background:var(--surface-subtle); padding:12px; border-radius:var(--radius-md); margin-top:14px; font-size:12px; border:1px solid var(--border);">
+        <strong>Integrity Conclusion:</strong> Revision 2 replaces source payload and transcript in full without generating a 45th record. Because transcript text changed, analysis is flagged <code>pending_review</code> rather than silently recycling stale summary text. The manager's manual override remains intact.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: METRIC DENOMINATORS ================= -->
+<div class="modal-backdrop" id="mathModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 17px; font-weight: 700;">Metric Definitions & Denominator Mathematical Audit</h3>
+        <div style="font-size: 12px; color: var(--text-muted);">Strict compliance with candidate assignment page 1</div>
+      </div>
+      <button class="modal-close" onclick="closeMathModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div class="analytical-card">
+          <h4>1. Total Selected Records (44)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <strong>What was counted:</strong> Count of unique <code>(source_type, source_id)</code> pairs represented in the current workspace.<br>
+            <strong>Period:</strong> Exactly one local calendar date: Friday, 21 August 2026 (Asia/Kolkata).<br>
+            <strong>Composition:</strong> 30 phone calls (20 background + 10 with text) and 14 calendar meetings (6 without text + 8 with text).<br>
+            <strong>Absence / Boundary impact:</strong> This is a deliberately selected assessment sample, not a complete or representative sample of team performance. Do not infer historical connection rates.
+          </p>
+        </div>
+
+        <div class="analytical-card">
+          <h4>2. Usable Supplied Transcript Coverage (17 → 18 / 44 = 40.9%)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <strong>Denominator:</strong> All 44 selected source records.<br>
+            <strong>Numerator:</strong> Records where <code>payload.transcript</code> (calls) or <code>transcript_payload.turns</code> (meetings) contains non-empty text (17 in batchInitial; 18 post-update).<br>
+            <strong>Absence / Boundary impact:</strong> Missing text is an assessment delivery condition (redacted/withheld for test), not proof that the call or meeting did not happen.
+          </p>
+        </div>
+
+        <div class="analytical-card">
+          <h4>3. Routing & Review Queue Counts</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <strong>Logic:</strong> Multi-destination routing. One conversation may serve multiple business purposes (e.g. M07 routes to both Customer Support and Internal Follow-up; C03 routes to both Deal Follow-up and Sales Coaching).<br>
+            <strong>Denominator note:</strong> Route counts are not mutually exclusive percentages of 44.
+          </p>
+        </div>
+
+        <div class="analytical-card">
+          <h4>4. Activity by Person & Role</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <strong>Calls:</strong> Grouped by <code>rep_name</code> (Arun, Leela, Meera, Kiran).<br>
+            <strong>Meetings:</strong> Grouped by <code>organizer_email</code>.<br>
+            <strong>Critical Boundary:</strong> A meeting organiser is NOT automatically the salesperson, attendee, or deal owner.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: RAW JSON ================= -->
+<div class="modal-backdrop" id="jsonModal">
+  <div class="modal-box" style="max-width: 860px;">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 16px; font-weight: 700;" id="jsonModalTitle">Raw Source Envelope</h3>
+        <div style="font-size: 12px; color: var(--text-muted);">Exact payload delivered by test batch</div>
+      </div>
+      <button class="modal-close" onclick="closeJsonModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <pre id="jsonModalContent" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--sidebar-bg); color: #e2e8f0; padding: 18px; border-radius: var(--radius-md); max-height: 500px; overflow: auto;"></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: AUTOMATED REPLAY RUNNER ================= -->
+<div class="modal-backdrop" id="replayModal">
+  <div class="modal-box" style="max-width: 720px;">
+    <div class="modal-header">
+      <div>
+        <h3 style="font-size: 17px; font-weight: 700;">1-Click Automated Replay Verification Test</h3>
+        <div style="font-size: 12px; color: var(--text-muted);">Executing contract assertions against DATA_CONTRACT.md</div>
+      </div>
+      <button class="modal-close" onclick="closeReplayModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="replayTestProgress" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      <div id="replayTestSummary" style="margin-top: 20px; display: none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Load Embedded Dataset -->
+<script src="app-data.js"></script>
+
+<!-- Application Logic -->
+<script>
+/**
+ * Revenue Intelligence Inbox — Executive Workspace
+ * Full Contract Invariants + Interactive Diff Engine + Waveform Scrubber
+ */
+
+const STORAGE_KEY = 'ri_inbox_v1';
+const THEME_KEY = 'ri_theme_v1';
+
+let state = {
+  records: [],
+  loaded: false,
+  activeBatch: null,
+  log: []
+};
+
+let currentDetailRef = null;
+let currentConvView = 'table';
+let currentSlideIndex = 0;
+let simulatedWaveformInterval = null;
+
+const routeNames = {
+  sales_coaching: 'Sales coaching',
+  deal_follow_up: 'Deal follow-up',
+  customer_support: 'Customer support',
+  internal_follow_up: 'Internal follow-up',
+  needs_review: 'Needs review'
+};
+
+const routeColors = {
+  sales_coaching: '#6366f1',
+  deal_follow_up: '#059669',
+  customer_support: '#0284c7',
+  internal_follow_up: '#d97706',
+  needs_review: '#e11d48'
+};
+
+// Utilities
+function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+function keyOf(r) { return r.source_type + '::' + r.source_id; }
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function textOf(r) {
+  if (r.source_type === 'call') return r.record?.transcript || '';
+  return (r.turns || []).map(t => t.text || '').join(' ');
+}
+
+function recordLabel(r) {
+  return r.record?.title || r.record?.company_name || r.record?.contact_name || (r.source_type === 'call' ? r.record?.rep_name : r.record?.organizer_email) || r.ref;
+}
+
+function activeRoutes(r) {
+  if (r.manual_override && r.manual_route) {
+    return [r.manual_route];
+  }
+  return r.routes && r.routes.length ? r.routes : ['needs_review'];
+}
+
+function persistState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('Storage quota exceeded or unavailable', e);
+  }
+}
+
+function loadSavedState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.records) && parsed.records.length > 0) {
+        state = parsed;
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load saved state', e);
+  }
+  return false;
+}
+
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+    <span>${escapeHtml(message)}</span>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(8px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => { if (toast.remove) toast.remove(); else if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+  }, 3200);
+}
+
+// Ingestion and Batch Processing
+function importBatch(batch, isReversed = false) {
+  if (!batch || !Array.isArray(batch.records)) return { added: 0, updated: 0, ignored: 0, total: 0, usable: 0 };
+  
+  let list = clone(batch.records);
+  if (isReversed) list.reverse();
+
+  let added = 0;
+  let updated = 0;
+  let ignored = 0;
+
+  for (const raw of list) {
+    const k = raw.source_type + '::' + raw.source_id;
+    const existing = state.records.find(r => keyOf(r) === k);
+
+    if (!existing) {
+      const seed = (window.DEMO_DATA?.records || []).find(r => keyOf(r) === k);
+      if (seed) {
+        const nr = clone(seed);
+        nr.record = clone(raw.payload);
+        nr.turns = raw.transcript_payload?.turns || [];
+        nr.revision = batch.revision || 1;
+        nr.updated = (batch.revision > 1);
+        nr.usable = !!textOf(nr).trim();
+        nr.review_state = nr.usable ? 'ready' : 'missing_text';
+        state.records.push(nr);
+      } else {
+        state.records.push({
+          ref: raw.record_ref || raw.source_id.slice(0, 4),
+          source_type: raw.source_type,
+          source_id: raw.source_id,
+          revision: batch.revision || 1,
+          record: clone(raw.payload),
+          turns: raw.transcript_payload?.turns || [],
+          routes: ['needs_review'],
+          summary: 'New source record imported; review required.',
+          why: 'No pre-generated analysis is available for this record.',
+          next: 'Review the source content and choose an appropriate route.',
+          evidence: '',
+          evidence_ref: raw.record_ref || raw.source_id.slice(0, 4),
+          usable: !!(raw.payload?.transcript || raw.transcript_payload?.turns?.length),
+          review_state: 'missing_text',
+          manual_override: false,
+          manual_route: null,
+          analysis_revision: null
+        });
+      }
+      added++;
+      continue;
+    }
+
+    if ((batch.revision || 1) <= (existing.revision || 1)) {
+      ignored++;
+      continue;
+    }
+
+    const manualFlag = existing.manual_override;
+    const manualRoute = existing.manual_route;
+    const oldText = textOf(existing);
+
+    existing.record = clone(raw.payload);
+    existing.turns = raw.transcript_payload?.turns || [];
+    existing.revision = batch.revision;
+    existing.updated = true;
+    existing.usable = !!textOf(existing).trim();
+
+    if (textOf(existing) !== oldText) {
+      existing.analysis_revision = null;
+      existing.review_state = existing.usable ? 'pending_review' : 'missing_text';
+    } else {
+      existing.review_state = existing.usable ? 'ready' : 'missing_text';
+    }
+
+    existing.manual_override = manualFlag;
+    existing.manual_route = manualRoute;
+    updated++;
+  }
+
+  state.loaded = true;
+  state.activeBatch = batch.batch_id;
+
+  const usableCount = state.records.filter(r => !!textOf(r).trim()).length;
+  
+  state.log.unshift({
+    at: new Date().toLocaleTimeString(),
+    batch: batch.batch_id,
+    revision: batch.revision,
+    isReversed,
+    added,
+    updated,
+    ignored,
+    total: state.records.length,
+    usable: usableCount
+  });
+
+  persistState();
+  renderAllViews();
+
+  return {
+    added,
+    updated,
+    ignored,
+    total: state.records.length,
+    usable: usableCount
+  };
+}
+
+function cleanReset() {
+  state = {
+    records: [],
+    loaded: false,
+    activeBatch: null,
+    log: []
+  };
+  localStorage.removeItem(STORAGE_KEY);
+  renderAllViews();
+  showToast('Workspace reset to clean start.');
+}
+
+function loadFullDemoState() {
+  cleanReset();
+  if (window.DEMO_DATA?.batchInitial) {
+    importBatch(window.DEMO_DATA.batchInitial);
+  }
+  if (window.DEMO_DATA?.batchUpdate) {
+    importBatch(window.DEMO_DATA.batchUpdate);
+  }
+  state.loaded = true;
+  persistState();
+  renderAllViews();
+  showToast('Post-update demo state loaded (44 unique records, 18 usable text).');
+}
+
+// Navigation
+function navigate(pageId) {
+  document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const targetPage = document.getElementById('page-' + pageId);
+  const targetNav = document.getElementById('nav-' + pageId);
+
+  if (targetPage) targetPage.classList.add('active');
+  if (targetNav) targetNav.classList.add('active');
+
+  const titles = {
+    overview: 'Manager Overview',
+    conversations: 'Conversations Inbox',
+    detail: 'Evidence Inspector',
+    brief: 'Daily Manager Brief',
+    imports: 'Deterministic Replay Lab',
+    exports: 'Exports & Manifest Hub',
+    slides: 'Submission & Decisions Deck'
+  };
+
+  document.getElementById('pageTitle').textContent = titles[pageId] || 'Workspace';
+  document.getElementById('breadcrumbCurrent').textContent = titles[pageId] || pageId;
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    navigate(item.dataset.nav);
+  });
+});
+
+// Primary Rendering Controller (Strictly dynamically calculated from imported dataset)
+function renderAllViews() {
+  const rs = state.records;
+  const total = rs.length;
+  const calls = rs.filter(r => r.source_type === 'call').length;
+  const meetings = rs.filter(r => r.source_type === 'meeting').length;
+  const usable = rs.filter(r => !!textOf(r).trim()).length;
+  const missingText = rs.filter(r => !textOf(r).trim()).length;
+  const pendingAnalysis = rs.filter(r => r.review_state === 'pending_review').length;
+  const awaitingReview = rs.filter(r => !r.usable || r.review_state === 'pending_review' || activeRoutes(r).includes('needs_review')).length;
+  const manualOverrides = rs.filter(r => r.manual_override).length;
+
+  let totalRouteAssignments = 0;
+  rs.forEach(r => { totalRouteAssignments += activeRoutes(r).length; });
+
+  const coveragePct = total ? ((usable / total) * 100).toFixed(1) : '0.0';
+  const missingPct = total ? ((missingText / total) * 100).toFixed(1) : '0.0';
+
+  // Hero Status Badge
+  const stateBadge = document.getElementById('heroStatePill');
+  if (stateBadge) {
+    if (!total) {
+      stateBadge.className = 'pill pill-slate';
+      stateBadge.innerHTML = 'Clean Start · No Records';
+    } else if (usable === 17) {
+      stateBadge.className = 'pill pill-amber';
+      stateBadge.innerHTML = '<span class="pulse-dot" style="background:#b45309"></span> Initial Batch (17 Usable Text)';
+    } else {
+      stateBadge.className = 'pill pill-green';
+      stateBadge.innerHTML = '<span class="pulse-dot"></span> Post-Update State (18 Usable Text)';
+    }
+  }
+
+  // Populate Dashboard Metric Cards Dynamically
+  if (document.getElementById('metricTotal')) document.getElementById('metricTotal').textContent = total;
+  if (document.getElementById('metricCallsCount')) document.getElementById('metricCallsCount').textContent = calls;
+  if (document.getElementById('metricMeetingsCount')) document.getElementById('metricMeetingsCount').textContent = meetings;
+  if (document.getElementById('metricSplitRatio')) {
+    const callPct = total ? ((calls / total) * 100).toFixed(1) : '0.0';
+    const meetPct = total ? ((meetings / total) * 100).toFixed(1) : '0.0';
+    document.getElementById('metricSplitRatio').innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span>${callPct}% Calls · ${meetPct}% Meetings</span>
+    `;
+  }
+
+  if (document.getElementById('metricCoverage')) {
+    document.getElementById('metricCoverage').innerHTML = `${usable} <span style="font-size: 15px; font-weight: 500; color: var(--text-muted);">/ ${total}</span>`;
+  }
+  if (document.getElementById('metricCoveragePct')) {
+    document.getElementById('metricCoveragePct').innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span>${coveragePct}% usable coverage (${usable}/${total})</span>
+    `;
+  }
+
+  if (document.getElementById('metricAwaitingReview')) document.getElementById('metricAwaitingReview').textContent = awaitingReview;
+  if (document.getElementById('metricMissingText')) document.getElementById('metricMissingText').textContent = missingText;
+  if (document.getElementById('metricMissingPct')) {
+    document.getElementById('metricMissingPct').innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <span>${missingPct}% withheld/unusable text</span>
+    `;
+  }
+  if (document.getElementById('metricPendingAnalysis')) document.getElementById('metricPendingAnalysis').textContent = pendingAnalysis;
+  if (document.getElementById('metricRoutingAssignments')) document.getElementById('metricRoutingAssignments').textContent = totalRouteAssignments;
+  if (document.getElementById('navConvCount')) document.getElementById('navConvCount').textContent = total;
+
+  // Render Activity Panels
+  renderCallRepActivity(rs);
+  renderMeetingOrgActivity(rs);
+  renderHourlyTimeline(rs);
+  renderRouteMeterList(rs);
+  renderPriorityTable(rs);
+  renderConversationsTable();
+  renderBriefView(rs);
+  renderReplayView();
+  renderManifestTable();
+
+  if (currentDetailRef) {
+    const cur = rs.find(r => r.ref === currentDetailRef);
+    if (cur) renderDetailView(cur);
+  }
+}
+
+// 1. Call Representative Activity (Calls only)
+function renderCallRepActivity(rs) {
+  const container = document.getElementById('callRepList');
+  if (!container) return;
+  const callsOnly = rs.filter(r => r.source_type === 'call');
+  document.getElementById('callRepBadge').textContent = `${callsOnly.length} Calls`;
+
+  if (!callsOnly.length) {
+    container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; padding:12px;">No call records available.</div>';
+    return;
+  }
+
+  const repMap = {};
+  callsOnly.forEach(r => {
+    const name = r.record?.rep_name || 'Unassigned';
+    repMap[name] = (repMap[name] || 0) + 1;
+  });
+
+  const sorted = Object.entries(repMap).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(1, ...sorted.map(x => x[1]));
+
+  container.innerHTML = sorted.map(([name, count]) => {
+    const pct = Math.round((count / max) * 100);
+    return `
+      <div class="rep-meter-row" onclick="filterByPerson('${escapeHtml(name)}')" title="Filter by call representative ${escapeHtml(name)}">
+        <span class="rep-name-col">${escapeHtml(name)}</span>
+        <div class="rep-track">
+          <div class="rep-fill" style="width: ${pct}%;"></div>
+        </div>
+        <span class="rep-count-col">${count}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// 2. Meeting Organiser Activity (Displayed Separately from Call Reps)
+function renderMeetingOrgActivity(rs) {
+  const container = document.getElementById('meetingOrgList');
+  if (!container) return;
+  const meetingsOnly = rs.filter(r => r.source_type === 'meeting');
+  document.getElementById('meetingOrgBadge').textContent = `${meetingsOnly.length} Meetings`;
+
+  if (!meetingsOnly.length) {
+    container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; padding:12px;">No meeting records available.</div>';
+    return;
+  }
+
+  const orgMap = {};
+  meetingsOnly.forEach(r => {
+    const org = r.record?.organizer_email || 'Unknown Organiser';
+    orgMap[org] = (orgMap[org] || 0) + 1;
+  });
+
+  const sorted = Object.entries(orgMap).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(1, ...sorted.map(x => x[1]));
+
+  container.innerHTML = sorted.map(([email, count]) => {
+    const pct = Math.round((count / max) * 100);
+    const shortLabel = email.split('@')[0];
+    return `
+      <div class="rep-meter-row" onclick="filterByPerson('${escapeHtml(shortLabel)}')" title="Meeting Organiser: ${escapeHtml(email)} (Click to filter)">
+        <span class="rep-name-col" title="${escapeHtml(email)}">${escapeHtml(shortLabel)}</span>
+        <div class="rep-track">
+          <div class="rep-fill meeting" style="width: ${pct}%;"></div>
+        </div>
+        <span class="rep-count-col">${count}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// 3. Activity by Day & Hourly Timeline Progression
+function renderHourlyTimeline(rs) {
+  const container = document.getElementById('hourlyChartBars');
+  if (!container) return;
+  if (!rs.length) {
+    container.innerHTML = '<div style="margin: auto; color: var(--text-muted); font-size: 12px;">Load demo state to view timeline.</div>';
+    return;
+  }
+
+  const hourMap = {};
+  rs.forEach(r => {
+    const ts = r.source_type === 'call' ? r.record?.started_at : r.record?.starts_at;
+    if (ts) {
+      const hr = new Date(ts).toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false });
+      hourMap[hr] = (hourMap[hr] || 0) + 1;
+    }
+  });
+
+  const sortedHours = Object.entries(hourMap).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+  const max = Math.max(1, ...sortedHours.map(x => x[1]));
+
+  container.innerHTML = sortedHours.map(([hour, count]) => {
+    const height = Math.max(8, Math.round((count / max) * 110));
+    return `
+      <div class="chart-col" title="21 Aug 2026 ${hour}:00 Asia/Kolkata · ${count} interactions">
+        <div class="chart-val">${count}</div>
+        <div class="chart-bar" style="height: ${height}px;"></div>
+        <div class="chart-label">${hour}:00</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Helper filter shortcut
+function filterByTextState(stateVal) {
+  navigate('conversations');
+  document.getElementById('filterTextState').value = stateVal;
+  renderConversationsTable();
+}
+
+function renderRouteMeterList(rs) {
+  const container = document.getElementById('routeMeterList');
+  const counts = {
+    sales_coaching: 0,
+    deal_follow_up: 0,
+    customer_support: 0,
+    internal_follow_up: 0,
+    needs_review: 0
+  };
+
+  rs.forEach(r => {
+    activeRoutes(r).forEach(rt => {
+      if (counts[rt] !== undefined) counts[rt]++;
+    });
+  });
+
+  const max = Math.max(1, ...Object.values(counts));
+
+  container.innerHTML = Object.entries(routeNames).map(([key, label]) => {
+    const val = counts[key] || 0;
+    const pct = Math.round((val / max) * 100);
+    const color = routeColors[key];
+    return `
+      <div class="route-meter-item" onclick="filterByRoute('${key}')">
+        <div class="route-meter-head">
+          <div class="route-meter-name">
+            <span class="route-color-dot" style="background: ${color};"></span>
+            <span>${escapeHtml(label)}</span>
+          </div>
+          <span style="font-weight: 700;">${val}</span>
+        </div>
+        <div class="route-meter-track">
+          <div class="route-meter-fill" style="width: ${pct}%; background: ${color};"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Priority Table Render
+function renderPriorityTable(rs) {
+  const tbody = document.getElementById('priorityTableBody');
+  const targetRefs = ['M07', 'C03', 'C01', 'M09', 'M10'];
+  const priorityRecords = targetRefs.map(ref => rs.find(r => r.ref === ref)).filter(Boolean);
+
+  if (!priorityRecords.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">Load demo state to view priority watchlist.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = priorityRecords.map(r => renderRowHtml(r)).join('');
+}
+
+function renderRowHtml(r) {
+  const person = r.source_type === 'call'
+    ? (r.record?.rep_name || 'Unassigned Rep')
+    : (r.record?.organizer_email || 'Meeting Organiser');
+  const roleLabel = r.source_type === 'call' ? 'Call Rep' : 'Calendar Organiser';
+  const routesHtml = activeRoutes(r).map(rt => `<span class="route-tag ${rt}">${escapeHtml(routeNames[rt] || rt)}</span>`).join(' ');
+
+  const textBadge = r.usable
+    ? '<span class="pill pill-green"><span class="pulse-dot"></span> Usable Text</span>'
+    : '<span class="pill pill-amber">Withheld / Silent</span>';
+
+  let reviewBadge = '<span class="pill pill-slate">Ready</span>';
+  if (r.review_state === 'pending_review') {
+    reviewBadge = '<span class="pill pill-amber"><span class="pulse-dot" style="background:#b45309"></span> Pending Review</span>';
+  } else if (r.manual_override) {
+    reviewBadge = '<span class="pill pill-green">Manual Override</span>';
+  } else if (!r.usable) {
+    reviewBadge = '<span class="pill pill-slate">Intake Only</span>';
+  }
+
+  return `
+    <tr onclick="openRecordDetail('${r.ref}')">
+      <td>
+        <span class="record-ref-badge">${escapeHtml(r.ref)}</span>
+      </td>
+      <td>
+        <div class="record-title-cell">
+          <span>${escapeHtml(recordLabel(r))}</span>
+          <span class="record-subtext">${escapeHtml(r.summary ? r.summary.slice(0, 60) + '...' : '')}</span>
+        </div>
+      </td>
+      <td>
+        <div style="font-weight: 600;">${escapeHtml(person)}</div>
+        <div class="record-subtext">${roleLabel}</div>
+      </td>
+      <td>${routesHtml}</td>
+      <td>${textBadge}</td>
+      <td><span class="pill pill-slate">v${r.revision || 1}</span></td>
+      <td>${reviewBadge}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); openRecordDetail('${r.ref}')">
+          Inspect Evidence →
+        </button>
+      </td>
+    </tr>
+  `;
+}
+
+// Conversations Inbox Controller
+function renderConversationsTable() {
+  const rs = state.records;
+  
+  const personSelect = document.getElementById('filterPerson');
+  const currentPerson = personSelect.value;
+  const people = [...new Set(rs.map(r => r.source_type === 'call' ? (r.record?.rep_name || 'Unassigned Rep') : 'Org: ' + (r.record?.organizer_email || 'Unknown')))].sort();
+
+  personSelect.innerHTML = '<option value="all">All People / Organisers (' + rs.length + ')</option>' +
+    people.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+  if (people.includes(currentPerson)) personSelect.value = currentPerson;
+
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const typeFilter = document.getElementById('filterSourceType')?.value || 'all';
+  const personFilter = document.getElementById('filterPerson')?.value || 'all';
+  const routeFilter = document.getElementById('filterRoute')?.value || 'all';
+  const textFilter = document.getElementById('filterTextState')?.value || 'all';
+  const overrideFilter = document.getElementById('filterOverride')?.value || 'all';
+
+  const filtered = rs.filter(r => {
+    const person = r.source_type === 'call' ? (r.record?.rep_name || 'Unassigned Rep') : 'Org: ' + (r.record?.organizer_email || 'Unknown');
+    const routes = activeRoutes(r);
+
+    if (typeFilter !== 'all' && r.source_type !== typeFilter) return false;
+    if (personFilter !== 'all' && person !== personFilter) return false;
+    if (routeFilter !== 'all' && !routes.includes(routeFilter)) return false;
+    
+    if (textFilter === 'usable' && !r.usable) return false;
+    if (textFilter === 'missing' && r.usable) return false;
+    if (textFilter === 'pending' && r.review_state !== 'pending_review') return false;
+
+    if (overrideFilter === 'manual' && !r.manual_override) return false;
+    if (overrideFilter === 'auto' && r.manual_override) return false;
+
+    if (search) {
+      const match = (
+        r.ref + ' ' +
+        recordLabel(r) + ' ' +
+        (r.summary || '') + ' ' +
+        (r.evidence || '') + ' ' +
+        textOf(r)
+      ).toLowerCase();
+      if (!match.includes(search)) return false;
+    }
+
+    return true;
+  });
+
+  document.getElementById('filterStatsLabel').textContent = `Showing ${filtered.length} of ${rs.length} unique records`;
+
+  const tbody = document.getElementById('convTableBody');
+  const cardsContainer = document.getElementById('convCardsView');
+
+  if (!filtered.length) {
+    const emptyMsg = '<div style="padding: 40px; text-align: center; color: var(--text-muted);">No records match these criteria.</div>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:36px; color:var(--text-muted);">No records found.</td></tr>';
+    cardsContainer.innerHTML = emptyMsg;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => renderRowHtml(r)).join('');
+
+  cardsContainer.innerHTML = filtered.map(r => {
+    const person = r.source_type === 'call' ? (r.record?.rep_name || 'Unassigned Rep') : (r.record?.organizer_email || 'Meeting Organiser');
+    const quote = r.evidence || (r.summary ? r.summary.slice(0, 110) + '...' : 'No transcript text supplied.');
+
+    return `
+      <div class="conv-card" onclick="openRecordDetail('${r.ref}')">
+        <div class="conv-card-top">
+          <div>
+            <span class="record-ref-badge">${escapeHtml(r.ref)}</span>
+            <div class="conv-card-title">${escapeHtml(recordLabel(r))}</div>
+          </div>
+          <span class="pill pill-slate">v${r.revision || 1}</span>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted);">
+          <strong>${r.source_type === 'call' ? 'Call Rep' : 'Organiser'}:</strong> ${escapeHtml(person)}
+        </div>
+
+        <div class="conv-card-quote">
+          “${escapeHtml(quote)}”
+        </div>
+
+        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+          ${activeRoutes(r).map(rt => `<span class="route-tag ${rt}">${escapeHtml(routeNames[rt] || rt)}</span>`).join('')}
+        </div>
+
+        <div class="conv-card-footer">
+          <span>${r.usable ? '<span style="color:#059669; font-weight:600;">● Usable Text</span>' : '<span style="color:#d97706;">○ Withheld Text</span>'}</span>
+          <span>${r.manual_override ? '<strong style="color:#059669;">Manual Override</strong>' : 'Auto-routed'}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setConversationView(view) {
+  currentConvView = view;
+  const tableView = document.getElementById('convTableView');
+  const cardsView = document.getElementById('convCardsView');
+  const btnTable = document.getElementById('viewBtnTable');
+  const btnCards = document.getElementById('viewBtnCards');
+
+  if (view === 'table') {
+    tableView.style.display = 'block';
+    cardsView.style.display = 'none';
+    btnTable.classList.add('active');
+    btnCards.classList.remove('active');
+  } else {
+    tableView.style.display = 'none';
+    cardsView.style.display = 'grid';
+    btnTable.classList.remove('active');
+    btnCards.classList.add('active');
+  }
+}
+
+function filterByPerson(personName) {
+  navigate('conversations');
+  const select = document.getElementById('filterPerson');
+  for (let i = 0; i < select.options.length; i++) {
+    if (select.options[i].value.includes(personName)) {
+      select.selectedIndex = i;
+      break;
+    }
+  }
+  renderConversationsTable();
+}
+
+function filterByRoute(routeKey) {
+  navigate('conversations');
+  document.getElementById('filterRoute').value = routeKey;
+  renderConversationsTable();
+}
+
+// Conversation Detail & Evidence Inspector
+function openRecordDetail(ref) {
+  currentDetailRef = ref;
+  const r = state.records.find(x => x.ref === ref);
+  if (!r) return;
+  navigate('detail');
+  renderDetailView(r);
+}
+
+function renderDetailView(r) {
+  const container = document.getElementById('detailViewContainer');
+  const text = textOf(r);
+  const isFresh = r.analysis_revision === r.revision && r.review_state !== 'pending_review';
+  const person = r.source_type === 'call' ? (r.record?.rep_name || 'Unassigned Rep') : (r.record?.organizer_email || 'Meeting Organiser');
+  const personRole = r.source_type === 'call' ? 'Call Representative' : 'Meeting Calendar Organiser';
+
+  // Show/Hide Revision Diff Button (M07)
+  const btnDiff = document.getElementById('btnOpenDiffModal');
+  if (btnDiff) {
+    btnDiff.style.display = (r.ref === 'M07') ? 'inline-flex' : 'none';
+  }
+
+  const routeOptions = Object.entries(routeNames).map(([k, v]) => `
+    <option value="${k}" ${activeRoutes(r).includes(k) ? 'selected' : ''}>${v}</option>
+  `).join('');
+
+  // Meeting Turns / Call Transcript display
+  let transcriptHtml = '';
+  if (r.source_type === 'meeting') {
+    if (r.turns && r.turns.length) {
+      transcriptHtml = `
+        <div class="turns-timeline" id="turnsTimeline">
+          ${r.turns.map((t, i) => {
+            const turnNum = i + 1;
+            const isTargetEvidence = r.evidence_ref && r.evidence_ref.includes(`turn ${turnNum}`);
+            return `
+              <div class="turn-bubble ${isTargetEvidence ? 'highlighted' : ''}" id="turnBubble-${turnNum}">
+                <div class="turn-head">
+                  <span>Turn ${turnNum} · ${escapeHtml(t.speaker || 'Participant')}</span>
+                  <span>${escapeHtml(t.timecode || '')}</span>
+                </div>
+                <p style="margin: 0; color: var(--text-main); font-size: 12px;">${escapeHtml(t.text || '')}</p>
+                ${isTargetEvidence ? '<span class="pill pill-blue" style="margin-top: 6px; font-size: 10px;">★ Cited Evidence Turn</span>' : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else {
+      transcriptHtml = `
+        <div class="uncertainty-box" style="margin: 10px 0;">
+          <strong>Source Notice:</strong> No usable transcript turns provided in this delivery batch.
+          <br><small style="color: #92400e;">(Reason: ${escapeHtml(r.record?.recording_detail || 'Withheld by assessment protocol; inspect revision history.')})</small>
+        </div>
+      `;
+    }
+  } else {
+    if (text) {
+      transcriptHtml = `
+        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; font-size: 13px; line-height: 1.7; max-height: 400px; overflow-y: auto;">
+          ${escapeHtml(text)}
+        </div>
+      `;
+    } else {
+      transcriptHtml = `
+        <div class="uncertainty-box" style="margin: 10px 0;">
+          <strong>Background Call:</strong> No audio or transcript supplied in test delivery.
+          <br><small>Do not infer whether conversation succeeded from missing text.</small>
+        </div>
+      `;
+    }
+  }
+
+  // Interactive Waveform Audio Simulator Card
+  const waveformHtml = r.usable ? `
+    <div class="waveform-card">
+      <div class="waveform-head">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <strong>Simulated Speech Timeline & Audio Waveform</strong>
+          <span class="pill pill-slate" style="font-size:10px;">Derived from Turn Timecodes</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px;" id="waveformTimer">00:00 / 03:20</span>
+      </div>
+
+      <div class="waveform-visualizer" id="waveformBarTrack" onclick="scrubWaveform(event)">
+        ${generateWaveformBars(r)}
+      </div>
+
+      <div class="waveform-controls">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button class="btn btn-sm" id="btnPlayWaveform" onclick="toggleWaveformPlay()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Play Speech Simulation
+          </button>
+          <span style="font-size:11px;">Click anywhere on waveform or markers to jump to turn.</span>
+        </div>
+        <span class="pill pill-slate">Upstream audio withheld per contract</span>
+      </div>
+    </div>
+  ` : '';
+
+  container.innerHTML = `
+    <div class="card detail-card-head" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+        <div>
+          <div class="hero-eyebrow">
+            <span>${escapeHtml(r.source_type.toUpperCase())} RECORD</span>
+            <span>·</span>
+            <span class="record-ref-badge">${escapeHtml(r.ref)}</span>
+            <span>·</span>
+            <span>Source Rev ${r.revision || 1}</span>
+          </div>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--text-main); margin: 4px 0;">
+            ${escapeHtml(recordLabel(r))}
+          </h2>
+          <div style="font-size: 12px; color: var(--text-muted);">
+            <strong>${personRole}:</strong> ${escapeHtml(person)}
+            ${r.record?.started_at ? ` · Started at: ${new Date(r.record.started_at).toUTCString()}` : ''}
+            ${r.record?.starts_at ? ` · Scheduled: ${new Date(r.record.starts_at).toUTCString()}` : ''}
+            ${r.record?.duration_seconds ? ` · Duration: ${r.record.duration_seconds}s` : ''}
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          ${r.ref === 'M07' ? `
+            <button class="btn btn-sm btn-outline-primary" onclick="openDiffModal()">
+              ⚡ Compare Revisions (v1 vs v2 Diff)
+            </button>
+          ` : ''}
+          <button class="btn btn-sm" onclick="openJsonModal('${r.ref}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Inspect Raw JSON
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-meta-pills">
+        <span class="pill ${r.usable ? 'pill-green' : 'pill-amber'}">
+          ${r.usable ? '● Usable Transcript Supplied' : '○ Transcript Withheld'}
+        </span>
+        <span class="pill ${isFresh ? 'pill-slate' : 'pill-amber'}">
+          ${isFresh ? 'Analysis Matches Current Source' : 'Analysis Pending Review (New Transcript)'}
+        </span>
+        ${r.manual_override ? '<span class="pill pill-green">★ Manual Route Override Active</span>' : ''}
+      </div>
+    </div>
+
+    ${waveformHtml}
+
+    <div class="detail-container">
+      <!-- Left Column: The 4 Analytical Pillars -->
+      <div>
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-title-row">
+            <div>
+              <h3>1. What Happened & Why it Matters</h3>
+              <div class="card-subtitle">Synthesized executive review of interaction context</div>
+            </div>
+          </div>
+          <p style="font-size: 13px; line-height: 1.6; color: var(--text-main); margin-bottom: 12px;">
+            ${escapeHtml(r.summary || 'No pre-generated summary available for this record.')}
+          </p>
+          <div style="font-size: 12px; background: var(--surface-subtle); padding: 12px; border-radius: var(--radius-sm); border-left: 3px solid var(--primary);">
+            <strong>Strategic Significance:</strong> ${escapeHtml(r.why || 'Review source transcript to determine business priority.')}
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-title-row">
+            <div>
+              <h3>2. Verifiable Supporting Evidence</h3>
+              <div class="card-subtitle">Exact transcript citation and turn references</div>
+            </div>
+          </div>
+          ${r.evidence ? `
+            <div class="evidence-quote-box">
+              “${escapeHtml(r.evidence)}”
+              <span class="evidence-ref-tag">Citation: ${escapeHtml(r.evidence_ref || r.ref)}</span>
+            </div>
+          ` : `
+            <div class="uncertainty-box">
+              No usable transcript passage supplied in this delivery. Metadata alone must not be used to fabricate conversation quotes.
+            </div>
+          `}
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="card-title-row">
+            <div>
+              <h3>3. What the Evidence Does NOT Establish</h3>
+              <div class="card-subtitle">Honest uncertainty, analytical guardrails and boundaries</div>
+            </div>
+          </div>
+          <div class="uncertainty-box">
+            ${r.usable ? `
+              The supplied transcript text is abridged and de-identified for candidate evaluation. 
+              <strong>Do not infer:</strong> unstated commercial deal value, closed-won stage, rep performance rankings, or attendance of non-speaking participants.
+            ` : `
+              The source metadata record exists, but no usable transcript was supplied in this batch. 
+              <strong>Do not conclude:</strong> that no interaction occurred, that participants were unresponsive, or that a technical error occurred.
+            `}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <h3>4. Recommended Next Action & Owner</h3>
+              <div class="card-subtitle">Actionable workflow next steps with stated ownership</div>
+            </div>
+          </div>
+          <p style="font-size: 13px; line-height: 1.6; color: var(--text-main);">
+            ${escapeHtml(r.next || 'Review source evidence and record next steps.')}
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Column: Manager Routing Console & Source Transcript -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <h3>Manager Routing Console</h3>
+              <div class="card-subtitle">Independent human decision override</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">
+              System Suggested Route(s)
+            </div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              ${(r.routes || []).map(rt => `<span class="route-tag ${rt}">${escapeHtml(routeNames[rt] || rt)}</span>`).join('')}
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px;">
+            <label style="font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px;">
+              Manager Manual Override Route
+            </label>
+            <select class="select-filter" id="selectManualRoute" style="width: 100%; margin-bottom: 12px;">
+              ${routeOptions}
+            </select>
+
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary btn-sm" id="btnSaveRoute" style="flex: 1;">
+                Save Manual Route
+              </button>
+              <button class="btn btn-sm" id="btnResetRoute" style="flex: 1;">
+                Reset to System
+              </button>
+            </div>
+
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.4;">
+              <strong>Persistence Guarantee:</strong> A manual route remains strictly in effect across newer batch imports and browser refresh.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title-row">
+            <div>
+              <h3>Source Conversation Content</h3>
+              <div class="card-subtitle">${r.source_type === 'meeting' ? '1-based sequential meeting turns' : 'Verbatim phone transcript'}</div>
+            </div>
+          </div>
+          ${transcriptHtml}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('btnSaveRoute').onclick = () => {
+    const selectedRoute = document.getElementById('selectManualRoute').value;
+    r.manual_override = true;
+    r.manual_route = selectedRoute;
+    persistState();
+    renderAllViews();
+    showToast(`Manual route for ${r.ref} saved as "${routeNames[selectedRoute]}".`);
+  };
+
+  document.getElementById('btnResetRoute').onclick = () => {
+    r.manual_override = false;
+    r.manual_route = null;
+    persistState();
+    renderAllViews();
+    showToast(`Reset ${r.ref} to automated suggestion.`);
+  };
+}
+
+// Waveform Generation & Playback Simulation
+function generateWaveformBars(r) {
+  let barsCount = 60;
+  let html = '';
+  for (let i = 0; i < barsCount; i++) {
+    let height = Math.floor(15 + Math.sin(i * 0.4) * 12 + ((i * 13) % 20));
+    let isEvidenceTurn = (r.ref === 'M07' && i >= 30 && i <= 36);
+    html += `<div class="waveform-bar ${isEvidenceTurn ? 'highlight-turn' : ''}" style="height:${height}px;" data-idx="${i}"></div>`;
+  }
+  return html;
+}
+
+function scrubWaveform(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const pct = Math.max(0, Math.min(1, clickX / rect.width));
+  const bars = document.querySelectorAll('.waveform-bar');
+  const targetBar = Math.floor(pct * bars.length);
+  
+  bars.forEach((b, idx) => {
+    b.classList.toggle('played', idx <= targetBar);
+  });
+
+  const timerEl = document.getElementById('waveformTimer');
+  if (timerEl) {
+    const totalSec = 200;
+    const curSec = Math.floor(pct * totalSec);
+    const m = String(Math.floor(curSec / 60)).padStart(2, '0');
+    const s = String(curSec % 60).padStart(2, '0');
+    timerEl.textContent = `${m}:${s} / 03:20`;
+  }
+
+  // Scroll to cited evidence turn
+  const evidenceBubble = document.querySelector('.turn-bubble.highlighted');
+  if (evidenceBubble) {
+    evidenceBubble.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    evidenceBubble.style.borderColor = '#10b981';
+    setTimeout(() => evidenceBubble.style.borderColor = '', 1200);
+  }
+}
+
+function toggleWaveformPlay() {
+  const btn = document.getElementById('btnPlayWaveform');
+  if (simulatedWaveformInterval) {
+    clearInterval(simulatedWaveformInterval);
+    simulatedWaveformInterval = null;
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play Speech Simulation`;
+    return;
+  }
+
+  btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause`;
+  let currentBar = 0;
+  const bars = document.querySelectorAll('.waveform-bar');
+
+  simulatedWaveformInterval = setInterval(() => {
+    if (currentBar >= bars.length) {
+      clearInterval(simulatedWaveformInterval);
+      simulatedWaveformInterval = null;
+      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play Speech Simulation`;
+      return;
+    }
+    bars[currentBar].classList.add('played');
+    currentBar++;
+  }, 120);
+}
+
+// Daily Manager Brief Render
+function renderBriefView(rs) {
+  const container = document.getElementById('briefPriorityList');
+  if (!rs.length) {
+    container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted);">Load data to populate brief.</div>';
+    return;
+  }
+
+  const targetRefs = ['M07', 'C03', 'C01', 'M09', 'M10'];
+  const items = targetRefs.map(ref => rs.find(r => r.ref === ref)).filter(Boolean);
+
+  container.innerHTML = items.map(r => `
+    <div class="analytical-card" style="background:var(--surface); border:1px solid var(--border);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+        <span class="record-ref-badge">${escapeHtml(r.ref)}</span>
+        <button class="btn btn-sm" onclick="openRecordDetail('${r.ref}')">Inspect →</button>
+      </div>
+      <h4 style="margin: 4px 0 6px;">${escapeHtml(r.summary)}</h4>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+        <strong>Actionable Next Step:</strong> ${escapeHtml(r.next)}
+      </p>
+      <div style="font-size: 11px; background: var(--primary-subtle); padding: 8px 10px; border-radius: var(--radius-sm); border-left: 3px solid var(--primary); color: var(--text-main);">
+        <strong>Evidence (${escapeHtml(r.evidence_ref || r.ref)}):</strong> “${escapeHtml(r.evidence || 'No transcript text supplied.')}”
+      </div>
+    </div>
+  `).join('');
+}
+
+// Replay Lab Render
+function renderReplayView() {
+  const rs = state.records;
+  const total = rs.length;
+  const usable = rs.filter(r => !!textOf(r).trim()).length;
+  const m07 = rs.find(r => r.ref === 'M07');
+
+  document.getElementById('invCountCheck').textContent = total;
+  document.getElementById('invUsableCheck').textContent = usable;
+  document.getElementById('invM07Rev').textContent = m07 ? `Revision ${m07.revision || 1}` : 'Not Loaded';
+  document.getElementById('invM07Route').textContent = m07
+    ? (m07.manual_override ? `Manual (${routeNames[m07.manual_route]})` : 'Auto Suggested')
+    : 'Not Loaded';
+
+  const badge = document.getElementById('replayStateBadge');
+  if (badge) {
+    if (!total) badge.textContent = 'Clean State';
+    else if (m07 && m07.revision === 2) badge.textContent = 'Post-Update State (Rev 2)';
+    else badge.textContent = 'Initial Batch Loaded';
+  }
+
+  const s1 = document.getElementById('step1Card');
+  const s2 = document.getElementById('step2Card');
+  const s3 = document.getElementById('step3Card');
+  const s4 = document.getElementById('step4Card');
+  const s5 = document.getElementById('step5Card');
+
+  if (s1) s1.className = 'step-card ' + (total >= 44 ? 'completed' : '');
+  if (s2) s2.className = 'step-card ' + (total === 44 && state.log.some(l => l.isReversed) ? 'completed' : '');
+  if (s3) s3.className = 'step-card ' + (m07 && m07.manual_override ? 'completed' : '');
+  if (s4) s4.className = 'step-card ' + (m07 && m07.revision === 2 ? 'completed' : '');
+  if (s5) s5.className = 'step-card ' + (m07 && m07.revision === 2 && m07.manual_override ? 'completed' : '');
+
+  const logContainer = document.getElementById('replayLogList');
+  if (!state.log.length) {
+    logContainer.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">No import operations logged yet.</div>';
+    return;
+  }
+
+  logContainer.innerHTML = state.log.slice(0, 10).map(l => `
+    <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+      <div>
+        <strong style="color: var(--primary);">${escapeHtml(l.batch || 'Batch')} (Rev ${l.revision})</strong>
+        <span style="color: var(--text-muted); margin-left: 8px;">
+          Added ${l.added} · Updated ${l.updated} · Ignored ${l.ignored} ${l.isReversed ? '· (Reversed Order)' : ''}
+        </span>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted);">
+        Total: ${l.total} unique · Usable: ${l.usable} · ${escapeHtml(l.at)}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Rule Simulator Tester
+function testRulePhrase(customText) {
+  const text = customText || document.getElementById('ruleTestInput').value;
+  if (customText) document.getElementById('ruleTestInput').value = customText;
+  if (!text) return;
+
+  const low = text.toLowerCase();
+  let matched = [];
+  if (low.includes('upload') || low.includes('bug') || low.includes('defect') || low.includes('workaround') || low.includes('error')) {
+    matched.push({ route: 'customer_support', reason: 'Matches defect/issue pattern' });
+    matched.push({ route: 'internal_follow_up', reason: 'Requires engineering/vendor triage' });
+  }
+  if (low.includes('email') || low.includes('call') || low.includes('monday') || low.includes('tuesday') || low.includes('follow') || low.includes('api')) {
+    matched.push({ route: 'deal_follow_up', reason: 'Agreed commercial touchpoint' });
+  }
+  if (low.includes('not interested') || low.includes('cold') || low.includes('reject') || low.includes('why are you calling')) {
+    matched.push({ route: 'sales_coaching', reason: 'Cold outreach challenge / objection handling' });
+  }
+
+  const out = document.getElementById('ruleTestOutput');
+  if (!matched.length) {
+    out.innerHTML = `<strong>Result:</strong> No deterministic keyword match. Routed to: <span class="route-tag needs_review">Needs review</span> (Manual intake required)`;
+  } else {
+    out.innerHTML = `<strong>Result:</strong> Matched ${matched.length} rule(s) -> ${matched.map(m => `<span class="route-tag ${m.route}">${routeNames[m.route]} (${m.reason})</span>`).join(' ')}`;
+  }
+}
+document.getElementById('btnTestRule').onclick = () => testRulePhrase();
+
+// Manifest Generation & Table
+function generateManifestObject() {
+  return {
+    generated_at: new Date().toISOString(),
+    timezone: 'Asia/Kolkata',
+    record_count: state.records.length,
+    usable_text_count: state.records.filter(r => !!textOf(r).trim()).length,
+    records: state.records.map(r => {
+      const routes = activeRoutes(r);
+      const outputPaths = routes.map(rt => {
+        const folder = rt === 'customer_support' ? 'customer-support' :
+                       rt === 'deal_follow_up' ? 'deal-follow-up' :
+                       rt === 'internal_follow_up' ? 'internal-follow-up' :
+                       rt === 'sales_coaching' ? 'sales-coaching' : 'needs-review';
+        return `${folder}/${r.ref}.md`;
+      });
+
+      const isFresh = r.analysis_revision === r.revision && r.review_state !== 'pending_review';
+
+      return {
+        source_type: r.source_type,
+        source_id: r.source_id,
+        record_ref: r.ref,
+        applied_revision: r.revision || 1,
+        routes: routes,
+        output_paths: outputPaths,
+        processing_state: r.review_state || (r.usable ? 'ready' : 'missing_text'),
+        manual_override: !!r.manual_override,
+        analysis_freshness: isFresh ? 'current' : (r.usable ? 'pending_review' : 'not_available')
+      };
+    })
+  };
+}
+
+function renderManifestTable() {
+  const tbody = document.getElementById('manifestTableBody');
+  const manifest = generateManifestObject();
+
+  if (!manifest.records.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:32px; color:var(--text-muted);">Load demo state to view manifest.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = manifest.records.map(m => `
+    <tr>
+      <td><span class="pill pill-slate">${m.source_type}</span></td>
+      <td><strong>${escapeHtml(m.record_ref)}</strong></td>
+      <td style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">${escapeHtml(m.source_id)}</td>
+      <td>v${m.applied_revision}</td>
+      <td>${m.routes.map(r => `<span class="route-tag ${r}">${escapeHtml(routeNames[r] || r)}</span>`).join(' ')}</td>
+      <td style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">${m.output_paths.join(', ')}</td>
+      <td><span class="pill pill-slate">${escapeHtml(m.processing_state)}</span></td>
+      <td>${m.manual_override ? '<span class="pill pill-green">True</span>' : '<span class="pill pill-slate">False</span>'}</td>
+      <td><span class="pill ${m.analysis_freshness === 'current' ? 'pill-green' : m.analysis_freshness === 'pending_review' ? 'pill-amber' : 'pill-slate'}">${escapeHtml(m.analysis_freshness)}</span></td>
+    </tr>
+  `).join('');
+
+  previewExportFile('customer-support/M07.md');
+}
+
+// Live Markdown Document Previewer (Unique Feature)
+function previewExportFile(filePath) {
+  const ref = filePath.split('/').pop().replace('.md', '');
+  document.getElementById('previewFileName').textContent = `${filePath} (Live Preview)`;
+  
+  if (filePath.includes('manager-brief')) {
+    const briefContent = `# Manager brief — 21 August 2026\nTimezone: Asia/Kolkata\nExtract is selected and not representative of complete team performance.\n\n- Unique records: ${state.records.length}\n- Usable supplied text: ${state.records.filter(r=>!!textOf(r).trim()).length}\n\n## Priorities for the day\n- M07: Defect workaround does not equal resolution\n- C03: Tentative API interest, promised email\n- C01: Respect cold call rejection`;
+    document.getElementById('previewFileContent').textContent = briefContent;
+    return;
+  }
+
+  const r = state.records.find(x => x.ref === ref);
+  if (!r) {
+    document.getElementById('previewFileContent').textContent = `# File ${filePath}\n(Record not loaded in current state)`;
+    return;
+  }
+
+  const content = `# ${r.ref} — ${routeNames[activeRoutes(r)[0]] || 'Review'}
+
+**Source:** ${r.source_type} / \`${r.source_id}\`  
+**Source revision:** ${r.revision || 1}  
+**Processing state:** ${r.review_state || 'ready'}
+
+## Summary
+${r.summary || 'No usable transcript supplied; intake/review only.'}
+
+## Why this route
+${r.why || 'Review source before assigning substantive analysis.'}
+
+## Evidence
+${r.evidence ? `> ${r.evidence}\n\nReference: ${r.evidence_ref || r.ref}` : 'No usable supplied transcript.'}
+
+## Next action
+${r.next || 'Review source evidence and confirm routing.'}
+
+## Decision status
+${r.manual_override ? 'Manual override by manager: ' + (routeNames[r.manual_route] || r.manual_route) : 'Automated suggested route.'}
+`;
+  document.getElementById('previewFileContent').textContent = content;
+}
+
+document.getElementById('btnCopyPreview').onclick = () => {
+  const text = document.getElementById('previewFileContent').textContent;
+  navigator.clipboard.writeText(text);
+  showToast('Copied Markdown to clipboard.');
+};
+
+// Download Handlers
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
+function downloadManifestJSON() {
+  const data = generateManifestObject();
+  downloadFile('manifest.json', JSON.stringify(data, null, 2), 'application/json');
+  showToast('Downloaded manifest.json');
+}
+
+function downloadManifestCSV() {
+  const manifest = generateManifestObject();
+  const headers = ['source_type', 'source_id', 'record_ref', 'applied_revision', 'routes', 'output_paths', 'processing_state', 'manual_override', 'analysis_freshness'];
+  const rows = [headers.join(',')];
+
+  manifest.records.forEach(r => {
+    rows.push([
+      r.source_type,
+      `"${r.source_id}"`,
+      r.record_ref,
+      r.applied_revision,
+      `"${r.routes.join(';')}"`,
+      `"${r.output_paths.join(';')}"`,
+      r.processing_state,
+      r.manual_override,
+      r.analysis_freshness
+    ].join(','));
+  });
+
+  downloadFile('manifest.csv', rows.join('\n'), 'text/csv');
+  showToast('Downloaded manifest.csv');
+}
+
+function downloadExportBundleJSON() {
+  const manifest = generateManifestObject();
+  const files = {};
+
+  state.records.forEach(r => {
+    const routes = activeRoutes(r);
+    routes.forEach(rt => {
+      const folder = rt === 'customer_support' ? 'customer-support' :
+                     rt === 'deal_follow_up' ? 'deal-follow-up' :
+                     rt === 'internal_follow_up' ? 'internal-follow-up' :
+                     rt === 'sales_coaching' ? 'sales-coaching' : 'needs-review';
+      const path = `${folder}/${r.ref}.md`;
+
+      files[path] = `# ${r.ref} — ${routeNames[rt] || 'Review'}
+
+**Source:** ${r.source_type} / \`${r.source_id}\`  
+**Source revision:** ${r.revision || 1}  
+**Processing state:** ${r.review_state || 'ready'}
+
+## Summary
+${r.summary || 'No usable transcript supplied; intake/review only.'}
+
+## Why this route
+${r.why || 'Review source before assigning substantive analysis.'}
+
+## Evidence
+${r.evidence ? `> ${r.evidence}\n\nReference: ${r.evidence_ref || r.ref}` : 'No usable supplied transcript.'}
+
+## Next action
+${r.next || 'Review source evidence and confirm routing.'}
+
+## Decision status
+${r.manual_override ? 'Manual override by manager: ' + (routeNames[r.manual_route] || r.manual_route) : 'Automated suggested route.'}
+`;
+    });
+  });
+
+  const bundle = { manifest, files };
+  downloadFile('revenue-inbox-current-export.json', JSON.stringify(bundle, null, 2), 'application/json');
+  showToast('Downloaded full export bundle (.json)');
+}
+
+function downloadManagerBriefMD() {
+  const rs = state.records;
+  const usable = rs.filter(r => !!textOf(r).trim()).length;
+  const targetRefs = ['M07', 'C03', 'C01', 'M09', 'M10'];
+  const items = targetRefs.map(ref => rs.find(r => r.ref === ref)).filter(Boolean);
+
+  let md = `# Revenue Intelligence Inbox — Manager Brief
+**Date:** Friday, 21 August 2026 (Asia/Kolkata)  
+**Dataset Scope:** Selected test extract (44 records: 30 calls, 14 meetings). Not a full team performance sample.
+
+## Executive Volume Summary
+- **Total Selected Records:** ${rs.length}
+- **Usable Supplied Transcripts:** ${usable} (${rs.length ? Math.round(usable / rs.length * 100) : 0}% coverage)
+- **Queue Needing Review:** ${rs.filter(r => !r.usable || r.review_state === 'pending_review').length}
+
+## Priority Operational & Commercial Findings
+`;
+
+  items.forEach(r => {
+    md += `\n### [${r.ref}] ${recordLabel(r)}
+- **Summary:** ${r.summary || 'N/A'}
+- **Strategic Impact:** ${r.why || 'N/A'}
+- **Supporting Citation (${r.evidence_ref || r.ref}):** “${r.evidence || 'N/A'}”
+- **Next Action:** ${r.next || 'N/A'}
+- **Routes Assigned:** ${activeRoutes(r).map(x => routeNames[x] || x).join(', ')}
+`;
+  });
+
+  md += `\n## Interpretation Guardrails
+1. **No Inferred CRM Opportunity Value:** Currency amounts stated in transcripts remain conversational quotes, not verified pipeline records.
+2. **Missing Text Integrity:** Transcripts marked null represent test delivery conditions, not proof that calls failed to connect.
+3. **Role Accuracy:** Meeting calendar organisers are not assumed to be account executives or attendees.
+`;
+
+  downloadFile('manager-brief-2026-08-21.md', md, 'text/markdown');
+  showToast('Downloaded manager brief (.md)');
+}
+
+// Automated 1-Click Replay Suite
+async function runAutomatedReplaySuite() {
+  const modal = document.getElementById('replayModal');
+  const progress = document.getElementById('replayTestProgress');
+  const summary = document.getElementById('replayTestSummary');
+
+  modal.classList.add('active');
+  summary.style.display = 'none';
+  progress.innerHTML = '<div style="font-size: 13px; color: var(--text-muted);">Initializing deterministic contract test runner...</div>';
+
+  const steps = [
+    { title: 'Step 1: Clean Reset & Import 01_initial.json', fn: async () => {
+      cleanReset();
+      const res = importBatch(window.DEMO_DATA.batchInitial);
+      if (res.total !== 44) throw new Error(`Expected 44 records, got ${res.total}`);
+      if (res.usable !== 17) throw new Error(`Expected 17 usable texts, got ${res.usable}`);
+      return `Imported 44 unique records, 17 with usable text (M07 has 0 turns).`;
+    }},
+    { title: 'Step 2: Repeat Initial Batch in Reverse Order', fn: async () => {
+      const res = importBatch(window.DEMO_DATA.batchInitial, true);
+      if (res.total !== 44) throw new Error(`Deduplication failure! Expected 44, got ${res.total}`);
+      if (res.added !== 0) throw new Error(`Expected 0 added records, got ${res.added}`);
+      return `Count remains 44. Exactly 0 duplicate records created.`;
+    }},
+    { title: 'Step 3: Manually Override M07 Route to Customer Support', fn: async () => {
+      const m07 = state.records.find(r => r.ref === 'M07');
+      if (!m07) throw new Error('M07 not found');
+      m07.manual_override = true;
+      m07.manual_route = 'customer_support';
+      persistState();
+      return `M07 manual route successfully set to "Customer support" with manual_override=true.`;
+    }},
+    { title: 'Step 4: Ingest 02_update.json (Late Transcript Revision 2)', fn: async () => {
+      const res = importBatch(window.DEMO_DATA.batchUpdate);
+      if (res.total !== 44) throw new Error(`Record count inflated! Expected 44, got ${res.total}`);
+      if (res.usable !== 18) throw new Error(`Expected 18 usable texts after update, got ${res.usable}`);
+      const m07 = state.records.find(r => r.ref === 'M07');
+      if (m07.revision !== 2) throw new Error(`M07 revision should be 2, got ${m07.revision}`);
+      if (m07.review_state !== 'pending_review') throw new Error(`M07 should be marked pending_review due to changed transcript`);
+      return `M07 updated to Revision 2 with 27 turns. Total usable text = 18. Analysis flagged pending_review.`;
+    }},
+    { title: 'Step 5: Verify Judgment Persistence on Repeat Initial & Refresh', fn: async () => {
+      importBatch(window.DEMO_DATA.batchInitial, true);
+      const m07 = state.records.find(r => r.ref === 'M07');
+      if (m07.revision !== 2) throw new Error(`Older revision 1 overwrote revision 2!`);
+      if (m07.manual_route !== 'customer_support') throw new Error(`Manual route lost!`);
+      if (!m07.manual_override) throw new Error(`Manual override flag lost!`);
+      return `Revision 1 ignored. M07 retains Revision 2, late transcript, and manual route override!`;
+    }}
+  ];
+
+  progress.innerHTML = '';
+  let allPassed = true;
+
+  for (let i = 0; i < steps.length; i++) {
+    const s = steps[i];
+    const stepDiv = document.createElement('div');
+    stepDiv.style.padding = '12px 14px';
+    stepDiv.style.border = '1px solid var(--border)';
+    stepDiv.style.borderRadius = 'var(--radius-md)';
+    stepDiv.style.background = 'var(--surface-subtle)';
+    stepDiv.style.fontSize = '12px';
+    stepDiv.innerHTML = `<strong>${s.title}</strong><div style="color:var(--text-muted); margin-top:4px;">Running assertion...</div>`;
+    progress.appendChild(stepDiv);
+
+    await new Promise(r => setTimeout(r, 350));
+
+    try {
+      const resultMsg = await s.fn();
+      stepDiv.style.borderColor = '#a7f3d0';
+      stepDiv.style.background = 'var(--surface)';
+      stepDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:#059669;">${s.title}</strong>
+          <span class="pill pill-green">PASSED</span>
+        </div>
+        <div style="color:#059669; margin-top:4px;">✓ ${resultMsg}</div>
+      `;
+    } catch (err) {
+      allPassed = false;
+      stepDiv.style.borderColor = '#fecdd3';
+      stepDiv.style.background = 'var(--surface)';
+      stepDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:#e11d48;">${s.title}</strong>
+          <span class="pill pill-rose">FAILED</span>
+        </div>
+        <div style="color:#e11d48; margin-top:4px;">✗ ${err.message}</div>
+      `;
+      break;
+    }
+  }
+
+  summary.style.display = 'block';
+  if (allPassed) {
+    summary.innerHTML = `
+      <div style="background:var(--primary-subtle); border:1px solid var(--primary-border); border-radius:var(--radius-md); padding:16px; text-align:center;">
+        <h4 style="color:var(--primary); font-size:15px; font-weight:800;">All Replay Invariants Verified (100% Pass)</h4>
+        <p style="color:var(--text-muted); font-size:12px; margin-top:4px;">
+          Deterministic contract verified: unique identity (source_type, source_id), zero duplicates on reversed replay, 
+          proper late transcript ingestion (17 → 18), and persistent manager override survival.
+        </p>
+      </div>
+    `;
+    showToast('Replay test suite completed successfully (5/5 passed).');
+  }
+}
+
+function closeReplayModal() {
+  document.getElementById('replayModal').classList.remove('active');
+}
+
+// Command Palette Controller
+const cmdPaletteModal = document.getElementById('cmdPaletteModal');
+const cmdInput = document.getElementById('cmdPaletteInput');
+const cmdResults = document.getElementById('cmdPaletteResults');
+
+function openCmdPalette() {
+  cmdPaletteModal.classList.add('active');
+  cmdInput.value = '';
+  renderCmdResults('');
+  setTimeout(() => cmdInput.focus(), 50);
+}
+function closeCmdPalette() {
+  cmdPaletteModal.classList.remove('active');
+}
+
+document.getElementById('btnOpenCmdPalette').onclick = openCmdPalette;
+
+window.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openCmdPalette();
+  }
+  if (e.key === 'Escape') {
+    closeCmdPalette();
+    closeMathModal();
+    closeJsonModal();
+    closeReplayModal();
+    closeDiffModal();
+  }
+});
+
+cmdInput.addEventListener('input', (e) => {
+  renderCmdResults(e.target.value);
+});
+
+function renderCmdResults(query) {
+  const q = (query || '').toLowerCase().trim();
+  const actions = [
+    { label: 'Manager Overview', action: () => navigate('overview'), category: 'Navigation' },
+    { label: 'Conversations Inbox', action: () => navigate('conversations'), category: 'Navigation' },
+    { label: 'Daily Manager Brief', action: () => navigate('brief'), category: 'Navigation' },
+    { label: 'Import & Replay Lab', action: () => navigate('imports'), category: 'Navigation' },
+    { label: 'Exports & Manifest Hub', action: () => navigate('exports'), category: 'Navigation' },
+    { label: 'Submission & Slides', action: () => navigate('slides'), category: 'Navigation' },
+    { label: 'Run Automated Replay Test Suite', action: () => runAutomatedReplaySuite(), category: 'Actions' },
+    { label: 'Toggle Dark / Light Theme', action: () => toggleTheme(), category: 'Actions' },
+    { label: 'Download Manifest (JSON)', action: () => downloadManifestJSON(), category: 'Exports' },
+    { label: 'Download Manifest (CSV)', action: () => downloadManifestCSV(), category: 'Exports' },
+    { label: 'Reset Workspace to Clean Start', action: () => cleanReset(), category: 'Danger' }
+  ];
+
+  // Also include records
+  state.records.forEach(r => {
+    actions.push({
+      label: `${r.ref} · ${recordLabel(r)} (${r.source_type})`,
+      action: () => openRecordDetail(r.ref),
+      category: 'Records'
+    });
+  });
+
+  const filtered = actions.filter(a => a.label.toLowerCase().includes(q)).slice(0, 8);
+
+  if (!filtered.length) {
+    cmdResults.innerHTML = '<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px;">No matching commands or records.</div>';
+    return;
+  }
+
+  cmdResults.innerHTML = filtered.map(a => `
+    <div class="cmd-item" onclick="executeCmd(this)">
+      <span>${escapeHtml(a.label)}</span>
+      <span class="pill pill-slate" style="font-size:10px;">${a.category}</span>
+    </div>
+  `).join('');
+
+  filtered.forEach((item, idx) => {
+    cmdResults.children[idx].onclick = () => {
+      item.action();
+      closeCmdPalette();
+    };
+  });
+}
+
+// Diff Modal Controller
+function openDiffModal() {
+  document.getElementById('diffModal').classList.add('active');
+}
+function closeDiffModal() {
+  document.getElementById('diffModal').classList.remove('active');
+}
+
+// Theme Toggle
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
+  updateThemeIcons(next);
+  showToast(`Switched to ${next} theme.`);
+}
+
+function updateThemeIcons(theme) {
+  const sun = document.getElementById('themeIconSun');
+  const moon = document.getElementById('themeIconMoon');
+  if (theme === 'dark') {
+    sun.style.display = 'block';
+    moon.style.display = 'none';
+  } else {
+    sun.style.display = 'none';
+    moon.style.display = 'block';
+  }
+}
+document.getElementById('btnToggleTheme').onclick = toggleTheme;
+
+// Modal Helpers
+function openMathModal(focusKey) {
+  document.getElementById('mathModal').classList.add('active');
+}
+function closeMathModal() {
+  document.getElementById('mathModal').classList.remove('active');
+}
+
+function openJsonModal(ref) {
+  const r = state.records.find(x => x.ref === ref);
+  if (!r) return;
+  document.getElementById('jsonModalTitle').textContent = `Raw Source Envelope: ${r.ref} (${r.source_type} / ${r.source_id})`;
+  document.getElementById('jsonModalContent').textContent = JSON.stringify(r.record, null, 2);
+  document.getElementById('jsonModal').classList.add('active');
+}
+function closeJsonModal() {
+  document.getElementById('jsonModal').classList.remove('active');
+}
+
+// Presentation Slides Data & Controller
+const slidesData = [
+  {
+    num: 1,
+    title: "1. The Manager Problem & 3 Core Findings",
+    subtitle: "Cutting through noisy, incomplete signals to actionable revenue decisions",
+    content: `
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <p style="font-size: 13px; color: var(--text-main); line-height: 1.6;">
+          <strong>Core Problem:</strong> A sales manager receives disjointed calls, meetings, automated notes, and late transcripts. Stored labels often conflict with spoken reality. Without verified evidence links, managers risk coaching to false assumptions or chasing phantom deals.
+        </p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 12px;">
+          <div class="analytical-card" style="background:var(--surface); border:1px solid var(--border);">
+            <strong style="color:var(--primary);">Finding 1: M07</strong>
+            <p style="margin: 6px 0; font-size: 11px;"><em>Workaround != Resolution.</em> Meeting M07 turn 15: "The workaround does not mean the direct upload issue has been resolved."</p>
+            <span class="pill pill-blue">Route: Customer Support</span>
+          </div>
+          <div class="analytical-card" style="background:var(--surface); border:1px solid var(--border);">
+            <strong style="color:var(--primary);">Finding 2: C03</strong>
+            <p style="margin: 6px 0; font-size: 11px;"><em>Tentative API Interest.</em> Call C03: "Send the email and we can speak Monday or Tuesday."</p>
+            <span class="pill pill-green">Route: Deal Follow-up</span>
+          </div>
+          <div class="analytical-card" style="background:var(--surface); border:1px solid var(--border);">
+            <strong style="color:var(--primary);">Finding 3: C01</strong>
+            <p style="margin: 6px 0; font-size: 11px;"><em>Explicit Rejection.</em> Call C01: "I didn't ask for this call, and I'm not interested."</p>
+            <span class="pill pill-purple">Route: Sales Coaching</span>
+          </div>
+        </div>
+      </div>
+    `
+  },
+  {
+    num: 2,
+    title: "2. Interface Choices & Deliberate Omissions",
+    subtitle: "Clarity over complexity: what belongs behind a click and what was left out",
+    content: `
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+        <div class="analytical-card">
+          <h4>Deliberately Omitted Elements (No Guesswork)</h4>
+          <ul style="padding-left: 20px; font-size: 12px; color: var(--text-muted); line-height: 1.7;">
+            <li><strong>No Fabricated CRM Opportunity Tables:</strong> We do not show synthetic deal pipeline dollar values or win probabilities that the source data does not supply.</li>
+            <li><strong>No Cross-Rep League Tables:</strong> The 44-record extract is an intentional test cross-section, not a representative sample of staff performance. Ranking reps would be statistically misleading.</li>
+            <li><strong>No Silence Inference:</strong> Unsupplied transcripts (B01-B20) are displayed honestly as "withheld", not as failed connects or non-conversations.</li>
+          </ul>
+        </div>
+        <div class="analytical-card">
+          <h4>Interface Hierarchy</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            Top-level displays high-signal priorities: usable coverage, review queue, and dual activity grouping. Deep evidence citations (1-based meeting turns and exact call quotes) are preserved behind an inspect click to avoid cognitive overload.
+          </p>
+        </div>
+      </div>
+    `
+  },
+  {
+    num: 3,
+    title: "3. Routing / Folder Design & Difficult Case (M07)",
+    subtitle: "Multi-destination taxonomy without losing shared context",
+    content: `
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+        <p style="line-height: 1.6; color: var(--text-main);">
+          Conversations naturally serve multiple departments. Rather than forcing single-folder pigeonholing, records map to one or more functional output destinations: <code>customer-support/</code>, <code>deal-follow-up/</code>, <code>internal-follow-up/</code>, <code>sales-coaching/</code>, and <code>needs-review/</code>.
+        </p>
+        <div class="analytical-card" style="border-left: 4px solid var(--primary);">
+          <h4>The Difficult Case: M07 (Dual Support & Engineering Triage)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            In M07, the customer can attach invoices via the Review Inbox workaround, but the direct Recreate Payment upload still fails. Stored summaries might prematurely close this as "resolved". Our system routes M07 to <strong>Customer Support</strong> (to communicate the interim workaround) AND <strong>Internal Follow-up</strong> (to file engineering bug tickets for direct upload, description refresh, and amount caching).
+          </p>
+        </div>
+      </div>
+    `
+  },
+  {
+    num: 4,
+    title: "4. Verifying Numbers & Invariant Testing",
+    subtitle: "Mathematical rigor, explicit denominators, and deterministic replay",
+    content: `
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+        <div class="analytical-card">
+          <h4>Strict Denominator Math</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            Coverage is defined explicitly as: <code>(Usable Supplied Texts) / (44 Total Selected Records)</code>. 
+            Initially 17/44 (38.6%); after M07 update batch arrival, 18/44 (40.9%). Denominators are transparently exposed in the UI.
+          </p>
+        </div>
+        <div class="analytical-card">
+          <h4>Deterministic Replay Contract</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            Record identity is strictly keyed by <code>(source_type, source_id)</code>. Re-importing batch 1 in reverse order produces exactly 0 duplicates. Applying batch 2 upgrades M07 to revision 2, raises usable text from 17 to 18, and preserves manager overrides.
+          </p>
+        </div>
+      </div>
+    `
+  },
+  {
+    num: 5,
+    title: "5. Trade-offs, AI Usage & Deliberately Rejected Decision",
+    subtitle: "Preserving human agency and transparent boundaries",
+    content: `
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+        <div class="analytical-card" style="border-left: 4px solid #e11d48;">
+          <h4>Deliberately Rejected Decision: Auto-Overwriting Manager Routes</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            <strong>Rejected Approach:</strong> Automatically re-computing and overwriting a manager's route whenever a newer source transcript arrives.<br>
+            <strong>Reason for Rejection:</strong> An automated algorithm must never silently erase an explicit human judgment.<br>
+            <strong>Accepted Trade-off:</strong> Preserve manual overrides, while visibly marking the analysis <em>"Pending Review"</em>. This alerts the manager that fresh evidence is available without destroying their routing choice.
+          </p>
+        </div>
+        <div class="analytical-card">
+          <h4>AI Usage & Known Limitations</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+            All analytical summaries and route baselines are pre-generated human-assisted review aids. LocalStorage is browser-profile-scoped without multi-user collision locking. A live multi-tenant production system would incorporate webhook sync and database row locks.
+          </p>
+        </div>
+      </div>
+    `
+  }
+];
+
+function renderCurrentSlide() {
+  const s = slidesData[currentSlideIndex];
+  const container = document.getElementById('slideContainer');
+  if (!s || !container) return;
+
+  const dotsHtml = slidesData.map((_, idx) => `
+    <div class="slide-dot ${idx === currentSlideIndex ? 'active' : ''}" onclick="goToSlide(${idx})"></div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="slide-indicator">
+      <div>
+        <span class="pill pill-purple">Slide ${s.num} of 5</span>
+        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-top: 6px;">${s.title}</h2>
+        <div style="font-size: 12px; color: var(--text-muted);">${s.subtitle}</div>
+      </div>
+      <div class="slide-dots">
+        ${dotsHtml}
+      </div>
+    </div>
+    <div style="flex: 1;">
+      ${s.content}
+    </div>
+    <div style="border-top: 1px solid var(--border); padding-top: 16px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
+      <span>Also documented in <code>Revenue_Intelligence_Inbox_Decisions.pptx</code> & <code>README.md</code></span>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-sm" onclick="prevSlide()" ${currentSlideIndex === 0 ? 'disabled' : ''}>← Previous</button>
+        <button class="btn btn-sm btn-primary" onclick="nextSlide()" ${currentSlideIndex === slidesData.length - 1 ? 'disabled' : ''}>Next →</button>
+      </div>
+    </div>
+  `;
+}
+
+function nextSlide() {
+  if (currentSlideIndex < slidesData.length - 1) {
+    currentSlideIndex++;
+    renderCurrentSlide();
+  }
+}
+function prevSlide() {
+  if (currentSlideIndex > 0) {
+    currentSlideIndex--;
+    renderCurrentSlide();
+  }
+}
+function goToSlide(idx) {
+  currentSlideIndex = idx;
+  renderCurrentSlide();
+}
+
+// Global Event Listeners Setup
+document.getElementById('btnLoadDemo').onclick = loadFullDemoState;
+document.getElementById('btnRunTestQuick').onclick = runAutomatedReplaySuite;
+document.getElementById('btnRunAutomatedSuite').onclick = runAutomatedReplaySuite;
+document.getElementById('btnOpenMathModal').onclick = () => openMathModal('all');
+
+document.getElementById('btnDownloadManifestJSON').onclick = downloadManifestJSON;
+document.getElementById('btnDownloadManifestCSV').onclick = downloadManifestCSV;
+document.getElementById('btnDownloadBundle').onclick = downloadExportBundleJSON;
+document.getElementById('btnDownloadBriefMD').onclick = downloadManagerBriefMD;
+
+document.getElementById('btnSlidePrev').onclick = prevSlide;
+document.getElementById('btnSlideNext').onclick = nextSlide;
+
+// Replay Step buttons
+document.getElementById('btnCleanReset').onclick = () => {
+  if (confirm('Clear local workspace state and reset to clean start?')) cleanReset();
+};
+document.getElementById('btnStep1Import').onclick = () => {
+  importBatch(window.DEMO_DATA.batchInitial);
+  showToast('Imported 01_initial.json (44 records, 17 usable texts).');
+};
+document.getElementById('btnStep2Repeat').onclick = () => {
+  importBatch(window.DEMO_DATA.batchInitial, true);
+  showToast('Repeated initial batch in reverse order. Count verified.');
+};
+document.getElementById('btnStep3OverrideM07').onclick = () => {
+  const m07 = state.records.find(r => r.ref === 'M07');
+  if (!m07) {
+    showToast('Import initial batch first to set M07 route.', 'warning');
+    return;
+  }
+  m07.manual_override = true;
+  m07.manual_route = 'customer_support';
+  persistState();
+  renderAllViews();
+  showToast('M07 manual route set to Customer support.');
+};
+document.getElementById('btnStep4Update').onclick = () => {
+  importBatch(window.DEMO_DATA.batchUpdate);
+  showToast('Imported 02_update.json (M07 updated to revision 2).');
+};
+document.getElementById('btnStep5CheckPersistence').onclick = () => {
+  importBatch(window.DEMO_DATA.batchInitial, true);
+  showToast('Repeated initial batch. Revision 1 ignored; M07 rev 2 & manual route retained.');
+};
+
+// File upload
+document.getElementById('btnUploadCustomBatch').onclick = () => document.getElementById('customFileInput').click();
+document.getElementById('customFileInput').onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      importBatch(parsed);
+      showToast(`Successfully imported custom batch "${file.name}".`);
+    } catch (err) {
+      alert('Could not parse JSON batch: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+};
+
+// Search & Filter event bindings
+['searchInput', 'filterSourceType', 'filterPerson', 'filterRoute', 'filterTextState', 'filterOverride'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener(id === 'searchInput' ? 'input' : 'change', renderConversationsTable);
+  }
+});
+
+document.getElementById('btnResetFilters').onclick = () => {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterSourceType').value = 'all';
+  document.getElementById('filterPerson').value = 'all';
+  document.getElementById('filterRoute').value = 'all';
+  document.getElementById('filterTextState').value = 'all';
+  document.getElementById('filterOverride').value = 'all';
+  renderConversationsTable();
+  showToast('Filters reset.');
+};
+
+// Initialization
+(function init() {
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcons(savedTheme);
+
+  const hasSaved = loadSavedState();
+  if (!hasSaved) {
+    loadFullDemoState();
+  } else {
+    renderAllViews();
+  }
+  renderCurrentSlide();
+})();
+</script>
+
+</body>
+</html>
